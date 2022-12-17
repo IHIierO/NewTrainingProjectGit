@@ -1,13 +1,13 @@
 //
-//  SettingsController.swift
+//  ChatBotController.swift
 //  NewTrainingProject
 //
-//  Created by Artem Vorobev on 16.12.2022.
+//  Created by Artem Vorobev on 17.12.2022.
 //
 
 import UIKit
 
-class SettingsController: UIViewController {
+class ChatBotController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -15,8 +15,8 @@ class SettingsController: UIViewController {
     }
     
     private func setupController(){
-        view.backgroundColor = .systemCyan
-        title = "Settings"
+        view.backgroundColor = .systemMint
+        title = "ChatBot"
     }
     
 }

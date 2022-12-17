@@ -8,7 +8,7 @@
 import UIKit
 
 enum SideMenuItem: String, CaseIterable {
-    case home = "Main"
+    case home = "Home"
     case settings = "Settings"
     case chatBot = "ChatBot"
 }
@@ -90,6 +90,7 @@ extension MenuView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let didSelectMenu = menuName[indexPath.row]
         delegate?.didSelectMenuIdem(named: didSelectMenu)
     }

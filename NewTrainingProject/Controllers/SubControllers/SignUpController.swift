@@ -101,7 +101,7 @@ class SignUpController: UIViewController {
                          }
                          print("\(result!.user.uid)")
                     }
-                    let mainController = UINavigationController(rootViewController: MainController())
+                    let mainController = UINavigationController(rootViewController: HomeController())
                     mainController.modalTransitionStyle = .crossDissolve
                     mainController.modalPresentationStyle = .fullScreen
                     self.present(mainController, animated: true)

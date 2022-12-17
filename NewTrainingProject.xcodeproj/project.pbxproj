@@ -20,10 +20,12 @@
 		398A0508294B477B00E02110 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 398A0507294B477B00E02110 /* GoogleService-Info.plist */; };
 		398A0513294B599000E02110 /* DefaultUIClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A0512294B599000E02110 /* DefaultUIClasses.swift */; };
 		398A0515294B715000E02110 /* ViewControllerHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A0514294B715000E02110 /* ViewControllerHelpers.swift */; };
-		398A0517294B7BB300E02110 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A0516294B7BB300E02110 /* MainController.swift */; };
+		398A0517294B7BB300E02110 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A0516294B7BB300E02110 /* HomeController.swift */; };
 		398A0519294C862400E02110 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A0518294C862400E02110 /* MenuView.swift */; };
 		398A051B294C877500E02110 /* ExtensionForSideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A051A294C877500E02110 /* ExtensionForSideMenu.swift */; };
 		398A051D294C9CDD00E02110 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A051C294C9CDD00E02110 /* SettingsController.swift */; };
+		398A051F294DE4CB00E02110 /* ContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A051E294DE4CB00E02110 /* ContainerController.swift */; };
+		398A0521294DF72C00E02110 /* ChatBotController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A0520294DF72C00E02110 /* ChatBotController.swift */; };
 		FA436B48A2DB0DFA7851B75A /* Pods_NewTrainingProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,10 +45,12 @@
 		398A0507294B477B00E02110 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		398A0512294B599000E02110 /* DefaultUIClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUIClasses.swift; sourceTree = "<group>"; };
 		398A0514294B715000E02110 /* ViewControllerHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerHelpers.swift; sourceTree = "<group>"; };
-		398A0516294B7BB300E02110 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
+		398A0516294B7BB300E02110 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		398A0518294C862400E02110 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		398A051A294C877500E02110 /* ExtensionForSideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionForSideMenu.swift; sourceTree = "<group>"; };
 		398A051C294C9CDD00E02110 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		398A051E294DE4CB00E02110 /* ContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerController.swift; sourceTree = "<group>"; };
+		398A0520294DF72C00E02110 /* ChatBotController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotController.swift; sourceTree = "<group>"; };
 		646DF55D19BCB3DA133BCFB4 /* Pods-NewTrainingProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.release.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.release.xcconfig"; sourceTree = "<group>"; };
 		7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NewTrainingProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977635C7DBA3F62A0B7EB380 /* Pods-NewTrainingProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.debug.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.debug.xcconfig"; sourceTree = "<group>"; };
@@ -148,8 +152,10 @@
 			isa = PBXGroup;
 			children = (
 				398A04E3294B3C8E00E02110 /* AuthController.swift */,
-				398A0516294B7BB300E02110 /* MainController.swift */,
+				398A051E294DE4CB00E02110 /* ContainerController.swift */,
+				398A0516294B7BB300E02110 /* HomeController.swift */,
 				398A051C294C9CDD00E02110 /* SettingsController.swift */,
+				398A0520294DF72C00E02110 /* ChatBotController.swift */,
 			);
 			path = MainControllers;
 			sourceTree = "<group>";
@@ -278,11 +284,13 @@
 				398A0515294B715000E02110 /* ViewControllerHelpers.swift in Sources */,
 				398A0506294B445E00E02110 /* SignUpController.swift in Sources */,
 				398A04F9294B3F3A00E02110 /* ViewControllerPreview.swift in Sources */,
-				398A0517294B7BB300E02110 /* MainController.swift in Sources */,
+				398A0517294B7BB300E02110 /* HomeController.swift in Sources */,
 				398A051D294C9CDD00E02110 /* SettingsController.swift in Sources */,
+				398A0521294DF72C00E02110 /* ChatBotController.swift in Sources */,
 				398A04E4294B3C8E00E02110 /* AuthController.swift in Sources */,
 				398A04E0294B3C8E00E02110 /* AppDelegate.swift in Sources */,
 				398A04E2294B3C8E00E02110 /* SceneDelegate.swift in Sources */,
+				398A051F294DE4CB00E02110 /* ContainerController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

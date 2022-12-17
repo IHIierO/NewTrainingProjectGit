@@ -17,7 +17,7 @@ public extension UIView {
         bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
     
-    func pinMenuTo(_ view: UIView, tith constant: CGFloat){
+    func pinMenuTo(_ view: UIView, with constant: CGFloat){
         view.addSubview(self)
         translatesAutoresizingMaskIntoConstraints = false
         topAnchor.constraint(equalTo: view.topAnchor).isActive = true

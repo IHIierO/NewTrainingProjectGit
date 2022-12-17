@@ -36,6 +36,34 @@ class ViewControllerHelpers {
         
         return nil
     }
+    //MARK: - clearHomeController
+    static func clearHomeController(homeController: HomeController){
+        if homeController.children.count > 0{
+            let viewControllers:[UIViewController] = homeController.children
+            viewControllers.last?.willMove(toParent: nil)
+            viewControllers.last?.removeFromParent()
+            viewControllers.last?.view.removeFromSuperview()
+        }
+    }
     
-   
+    static func chooseController(controller: SideMenuItem, homeController: HomeController){
+        
+        let settingsController = SettingsController()
+        let chatBotController = ChatBotController()
+        
+        if controller == .settings {
+            homeController.addChild(settingsController)
+            homeController.view.addSubview(settingsController.view)
+            settingsController.view.frame = homeController.view.frame
+            settingsController.didMove(toParent: homeController)
+            homeController.title = settingsController.title
+        } else if controller == .chatBot {
+            homeController.addChild(chatBotController)
+            homeController.view.addSubview(chatBotController.view)
+            chatBotController.view.frame = homeController.view.frame
+            chatBotController.didMove(toParent: homeController)
+            homeController.title = chatBotController.title
+        }
+        
+    }
 }
