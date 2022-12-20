@@ -25,7 +25,11 @@
 		398A051B294C877500E02110 /* ExtensionForSideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A051A294C877500E02110 /* ExtensionForSideMenu.swift */; };
 		398A051D294C9CDD00E02110 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A051C294C9CDD00E02110 /* SettingsController.swift */; };
 		398A051F294DE4CB00E02110 /* ContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A051E294DE4CB00E02110 /* ContainerController.swift */; };
-		398A0521294DF72C00E02110 /* ChatBotController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A0520294DF72C00E02110 /* ChatBotController.swift */; };
+		398A0521294DF72C00E02110 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A0520294DF72C00E02110 /* ChatController.swift */; };
+		398A05252951F25700E02110 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A05242951F25700E02110 /* ChatMessageCell.swift */; };
+		398A05282951F98900E02110 /* ChatModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A05272951F98900E02110 /* ChatModels.swift */; };
+		398A052B29520BA400E02110 /* ChatMessageHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A052A29520BA400E02110 /* ChatMessageHeader.swift */; };
+		398A052D2952117F00E02110 /* CustomDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A052C2952117F00E02110 /* CustomDate.swift */; };
 		FA436B48A2DB0DFA7851B75A /* Pods_NewTrainingProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -50,7 +54,11 @@
 		398A051A294C877500E02110 /* ExtensionForSideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionForSideMenu.swift; sourceTree = "<group>"; };
 		398A051C294C9CDD00E02110 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		398A051E294DE4CB00E02110 /* ContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerController.swift; sourceTree = "<group>"; };
-		398A0520294DF72C00E02110 /* ChatBotController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotController.swift; sourceTree = "<group>"; };
+		398A0520294DF72C00E02110 /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
+		398A05242951F25700E02110 /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
+		398A05272951F98900E02110 /* ChatModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModels.swift; sourceTree = "<group>"; };
+		398A052A29520BA400E02110 /* ChatMessageHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageHeader.swift; sourceTree = "<group>"; };
+		398A052C2952117F00E02110 /* CustomDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDate.swift; sourceTree = "<group>"; };
 		646DF55D19BCB3DA133BCFB4 /* Pods-NewTrainingProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.release.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.release.xcconfig"; sourceTree = "<group>"; };
 		7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NewTrainingProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977635C7DBA3F62A0B7EB380 /* Pods-NewTrainingProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.debug.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.debug.xcconfig"; sourceTree = "<group>"; };
@@ -98,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				398A0502294B43C700E02110 /* Controllers */,
+				398A05222951F22D00E02110 /* Models */,
 				398A04F6294B3F0300E02110 /* ExtensionsAndHelpers */,
 				398A04EB294B3C8F00E02110 /* Assets.xcassets */,
 				398A04ED294B3C8F00E02110 /* LaunchScreen.storyboard */,
@@ -127,6 +136,7 @@
 				398A04FF294B433000E02110 /* EasyLayouts.swift */,
 				398A0512294B599000E02110 /* DefaultUIClasses.swift */,
 				398A051A294C877500E02110 /* ExtensionForSideMenu.swift */,
+				398A052C2952117F00E02110 /* CustomDate.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -155,7 +165,7 @@
 				398A051E294DE4CB00E02110 /* ContainerController.swift */,
 				398A0516294B7BB300E02110 /* HomeController.swift */,
 				398A051C294C9CDD00E02110 /* SettingsController.swift */,
-				398A0520294DF72C00E02110 /* ChatBotController.swift */,
+				398A0520294DF72C00E02110 /* ChatController.swift */,
 			);
 			path = MainControllers;
 			sourceTree = "<group>";
@@ -167,6 +177,32 @@
 				398A0518294C862400E02110 /* MenuView.swift */,
 			);
 			path = SubControllers;
+			sourceTree = "<group>";
+		};
+		398A05222951F22D00E02110 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				398A05272951F98900E02110 /* ChatModels.swift */,
+				398A05232951F23B00E02110 /* Cells */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		398A05232951F23B00E02110 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				398A052929520B8200E02110 /* CellForChat */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		398A052929520B8200E02110 /* CellForChat */ = {
+			isa = PBXGroup;
+			children = (
+				398A05242951F25700E02110 /* ChatMessageCell.swift */,
+				398A052A29520BA400E02110 /* ChatMessageHeader.swift */,
+			);
+			path = CellForChat;
 			sourceTree = "<group>";
 		};
 		CE6A2C1E33C297145DEFC60F /* Pods */ = {
@@ -277,17 +313,21 @@
 			files = (
 				398A051B294C877500E02110 /* ExtensionForSideMenu.swift in Sources */,
 				398A0500294B433000E02110 /* EasyLayouts.swift in Sources */,
+				398A05252951F25700E02110 /* ChatMessageCell.swift in Sources */,
+				398A05282951F98900E02110 /* ChatModels.swift in Sources */,
 				398A0519294C862400E02110 /* MenuView.swift in Sources */,
 				398A0513294B599000E02110 /* DefaultUIClasses.swift in Sources */,
 				398A04EA294B3C8E00E02110 /* NewTrainingProject.xcdatamodeld in Sources */,
 				398A04FD294B426C00E02110 /* ColorHex.swift in Sources */,
+				398A052D2952117F00E02110 /* CustomDate.swift in Sources */,
 				398A0515294B715000E02110 /* ViewControllerHelpers.swift in Sources */,
 				398A0506294B445E00E02110 /* SignUpController.swift in Sources */,
 				398A04F9294B3F3A00E02110 /* ViewControllerPreview.swift in Sources */,
 				398A0517294B7BB300E02110 /* HomeController.swift in Sources */,
 				398A051D294C9CDD00E02110 /* SettingsController.swift in Sources */,
-				398A0521294DF72C00E02110 /* ChatBotController.swift in Sources */,
+				398A0521294DF72C00E02110 /* ChatController.swift in Sources */,
 				398A04E4294B3C8E00E02110 /* AuthController.swift in Sources */,
+				398A052B29520BA400E02110 /* ChatMessageHeader.swift in Sources */,
 				398A04E0294B3C8E00E02110 /* AppDelegate.swift in Sources */,
 				398A04E2294B3C8E00E02110 /* SceneDelegate.swift in Sources */,
 				398A051F294DE4CB00E02110 /* ContainerController.swift in Sources */,

@@ -93,14 +93,14 @@ class AuthController: UIViewController {
         if error != nil {
             errorLabel.alpha = 1
         }else{
-            Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { result, error in
+            Auth.auth().signIn(withEmail: emailTextField.text!.lowercased(), password: passwordTextField.text!) { result, error in
                 if error != nil {
                     self.errorLabel.alpha = 1
                 }else{
-                    let mainController = UINavigationController(rootViewController: HomeController())
-                    mainController.modalTransitionStyle = .crossDissolve
-                    mainController.modalPresentationStyle = .fullScreen
-                    self.present(mainController, animated: true)
+                    let containerController = ContainerController()
+                    containerController.modalTransitionStyle = .crossDissolve
+                    containerController.modalPresentationStyle = .fullScreen
+                    self.present(containerController, animated: true)
                 }
             }
         }

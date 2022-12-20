@@ -37,9 +37,9 @@ class ViewControllerHelpers {
         return nil
     }
     //MARK: - clearHomeController
-    static func clearHomeController(homeController: HomeController){
-        if homeController.children.count > 0{
-            let viewControllers:[UIViewController] = homeController.children
+    static func clearController(controller: UIViewController){
+        if controller.children.count > 0{
+            let viewControllers:[UIViewController] = controller.children
             viewControllers.last?.willMove(toParent: nil)
             viewControllers.last?.removeFromParent()
             viewControllers.last?.view.removeFromSuperview()
@@ -48,8 +48,15 @@ class ViewControllerHelpers {
     
     static func chooseController(controller: SideMenuItem, homeController: HomeController){
         
+        if homeController.children.count > 0{
+            let viewControllers:[UIViewController] = homeController.children
+            viewControllers.last?.willMove(toParent: nil)
+            viewControllers.last?.removeFromParent()
+            viewControllers.last?.view.removeFromSuperview()
+        }
+        
         let settingsController = SettingsController()
-        let chatBotController = ChatBotController()
+        let chatBotController = ChatController()
         
         if controller == .settings {
             homeController.addChild(settingsController)

@@ -84,13 +84,11 @@ extension ContainerController: MenuViewDelegate {
         toggleMenu { [self] in
             switch named {
             case .home:
-                ViewControllerHelpers.clearHomeController(homeController: homeController)
+                ViewControllerHelpers.clearController(controller: homeController)
                 homeController.title = "Home"
             case .settings:
-                ViewControllerHelpers.clearHomeController(homeController: homeController)
                 ViewControllerHelpers.chooseController(controller: .settings, homeController: homeController)
             case .chatBot:
-                ViewControllerHelpers.clearHomeController(homeController: homeController)
                 ViewControllerHelpers.chooseController(controller: .chatBot, homeController: homeController)
             }
         }
@@ -106,6 +104,5 @@ struct ContainerController_Previews: PreviewProvider {
             let viewController = ContainerController()
             return viewController
         }.edgesIgnoringSafeArea(.all)
-            
     }
 }
