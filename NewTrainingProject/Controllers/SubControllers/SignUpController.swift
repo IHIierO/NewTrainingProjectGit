@@ -9,8 +9,20 @@ import UIKit
 import FirebaseAuth
 import FirebaseCore
 import FirebaseFirestore
+import Photos
+import PhotosUI
 
 class SignUpController: UIViewController {
+    
+    let width = UIScreen.main.bounds.width
+    var profileImage: UIImageView = {
+       let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "person.circle.fill")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = true
+        return imageView
+    }()
     
     var nameTextField = DefaultUITextField(placeholderText: "Enter your Name")
     var lastNameTextField = DefaultUITextField(placeholderText: "Enter your LastName")
@@ -30,23 +42,41 @@ class SignUpController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupController()
+        setupProfileImage()
         setConstraints()
     }
 
     private func setupController(){
         view.backgroundColor = .white
-        [nameTextField, lastNameTextField, emailTextField, passwordTextField, signUpButton, errorLabel].forEach {
+        [profileImage,nameTextField, lastNameTextField, emailTextField, passwordTextField, signUpButton, errorLabel].forEach {
             view.addSubview($0)
         }
         signUpButton.addTarget(self, action: #selector(createNewUser), for: .touchUpInside)
         errorLabel.textColor = .red
         errorLabel.alpha = 0
+        passwordTextField.isSecureTextEntry = true
+    }
+    
+    private func setupProfileImage(){
+        profileImage.layer.cornerRadius = width * 0.5 / 2
+        profileImage.layer.masksToBounds = true
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(tapProfileImafeToChange))
+        profileImage.addGestureRecognizer(gesture)
+    }
+    
+    @objc func tapProfileImafeToChange(){
+        presentPhotoActionSheet()
     }
     
     private func setConstraints(){
         NSLayoutConstraint.activate([
+            profileImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            profileImage.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
+            profileImage.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
+            
             nameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            nameTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -view.frame.size.height/4),
+            nameTextField.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 20),
             nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             nameTextField.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.05),
@@ -86,7 +116,7 @@ class SignUpController: UIViewController {
             errorLabel.alpha = 1
             errorLabel.text = error
         } else {
-            Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { result, error in
+            Auth.auth().createUser(withEmail: emailTextField.text!.lowercased(), password: passwordTextField.text!) { result, error in
                 if error != nil {
                     self.errorLabel.text = "\(error?.localizedDescription)"
                 } else {
@@ -100,18 +130,90 @@ class SignUpController: UIViewController {
                              self.errorLabel.text = "Error savind user in dataBase"
                          }
                          print("\(result!.user.uid)")
+                         guard let image = self.profileImage.image, let data = image.pngData() else {
+                             return
+                         }
+                         let fileName = "\(self.emailTextField.text!.lowercased())_profile_image.png"
+                         StorageManager.shared.uploadProfileImage(with: data, fileName: fileName) { results in
+                             switch results {
+                             case .success(let downloadURL):
+                                 UserDefaults.standard.set(downloadURL, forKey: "profile_image_url")
+                                 print(downloadURL)
+                             case .failure(let error):
+                                 print("Storage manager error: \(error)")
+                             }
+                         }
                     }
-                    let containerController = ContainerController()
-                    containerController.modalTransitionStyle = .crossDissolve
-                    containerController.modalPresentationStyle = .fullScreen
-                    self.present(containerController, animated: true)
+                    if Auth.auth().currentUser != nil {
+                        
+                        let containerController = ContainerController()
+                        containerController.modalTransitionStyle = .crossDissolve
+                        containerController.modalPresentationStyle = .fullScreen
+                        self.present(containerController, animated: true)
+                    }
                 }
             }
         }
     }
 
-
 }
+
+extension SignUpController: UIImagePickerControllerDelegate, PHPickerViewControllerDelegate, UINavigationControllerDelegate {
+    
+    func presentPhotoActionSheet(){
+        let actionSheet = UIAlertController(title: "Фото профиля", message: "Выберете способ", preferredStyle: .actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Отмена", style: .cancel))
+        actionSheet.addAction(UIAlertAction(title: "Камера", style: .default, handler: { [weak self] _ in
+            self?.presentCamera()
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Библиотека", style: .default, handler: { [weak self] _ in
+            self?.presentPhotoPicker()
+        }))
+        present(actionSheet, animated: true)
+    }
+    
+    func presentCamera(){
+        let vc = UIImagePickerController()
+        vc.sourceType = .camera
+        vc.delegate = self
+        vc.allowsEditing = true
+        present(vc, animated: true)
+    }
+    
+    func presentPhotoPicker(){
+        var config = PHPickerConfiguration(photoLibrary: .shared())
+        config.filter = .images
+        config.selectionLimit = 1
+        let vc = PHPickerViewController(configuration: config)
+        vc.delegate = self
+        present(vc, animated: true)
+        
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {return}
+        self.profileImage.image = image
+    }
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        
+        results.forEach { result in
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
+                guard let image = reading as? UIImage, error == nil else {return}
+                DispatchQueue.main.async {
+                    self?.profileImage.image = image
+                }
+            }
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+}
+
 
 // MARK: - SwiftUI
 import SwiftUI

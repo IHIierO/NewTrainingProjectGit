@@ -10,7 +10,7 @@ import UIKit
 class ChatController: UITableViewController {
     
     var textMessagesArray = [[ChatMessage]]()
-    let messageFromServer = [
+    var messageFromServer = [
         ChatMessage(text: "Привет", isIncoming: true, date: Date.dateFromCustomString(string: "19.12.2022")) ,
         ChatMessage(text: "Чем сегодня занимался?", isIncoming: true, date: Date.dateFromCustomString(string: "19.12.2022")),
         ChatMessage(text: "Привет, да ничем особенным. Программировал пол дня, покушал. Посмотрел видосы.", isIncoming: false, date: Date.dateFromCustomString(string: "20.12.2022")),
@@ -29,7 +29,16 @@ class ChatController: UITableViewController {
         }
     }
     
-    let sendTextFiend = DefaultUITextField(placeholderText: "Aa")
+    private let sendTextFiend = DefaultUITextField(placeholderText: "Aa")
+    private let sendButton: UIButton = {
+        let button = UIButton()
+        button.configuration = .filled()
+        button.configuration?.image = UIImage(systemName: "paperplane.circle")
+        button.configuration?.baseBackgroundColor = .systemBlue
+        button.configuration?.baseForegroundColor = .black
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,9 +53,21 @@ class ChatController: UITableViewController {
         tableView.separatorStyle = .none
         view.addSubview(sendTextFiend)
         sendTextFiend.delegate = self
-        sendTextFiend.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor).isActive = true
-        sendTextFiend.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        sendTextFiend.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.1).isActive = true
+        view.addSubview(sendButton)
+        sendButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
+        
+        NSLayoutConstraint.activate([
+            sendTextFiend.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            sendTextFiend.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            sendTextFiend.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+            sendTextFiend.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.1),
+            
+            sendButton.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            sendButton.leadingAnchor.constraint(equalTo: sendTextFiend.trailingAnchor, constant: 10),
+            sendButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.1),
+            sendButton.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.1),
+        ])
+        
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -84,12 +105,18 @@ class ChatController: UITableViewController {
 }
 extension ChatController: UITextFieldDelegate {
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        let text = textField.text
+    @objc func sendButtonTapped(){
+        let text = self.sendTextFiend.text
         if !text!.isEmpty {
-            textMessagesArray.append([ChatMessage(text: text!, isIncoming: false, date: .now)])
+            let sendDate = Calendar.current.dateComponents([.day, .month, .year], from: .now)
+            let date = Calendar.current.date(from: sendDate)
+            messageFromServer.append(contentsOf: [ChatMessage(text: text!, isIncoming: false, date: date!)])
+            attemptToAssambleGroupedMessage()
+            tableView.reloadData()
+            sendTextFiend.text = nil
         }
     }
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         return tableView.endEditing(true)

@@ -12,6 +12,8 @@ import FirebaseAuth
 
 class SettingsController: UIViewController {
     
+    
+    
     var signOutButton: UIButton = {
         let button = UIButton()
         button.configuration = .gray()
@@ -20,6 +22,7 @@ class SettingsController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,16 +34,17 @@ class SettingsController: UIViewController {
         view.backgroundColor = .systemCyan
         title = "Settings"
         view.addSubview(signOutButton)
+        
         signOutButton.addTarget(self, action: #selector(signOutButtonAction), for: .touchUpInside)
+        
     }
     
     private func setConstraints(){
         NSLayoutConstraint.activate([
             signOutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            signOutButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            signOutButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             signOutButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
-            signOutButton.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.2),
-            
+            signOutButton.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.1),
         ])
     }
     
@@ -48,7 +52,7 @@ class SettingsController: UIViewController {
         let firebaseAuth = Auth.auth()
      do {
        try firebaseAuth.signOut()
-         let authController = AuthController()
+         let authController = UINavigationController(rootViewController: AuthController()) 
          authController.modalTransitionStyle = .crossDissolve
          authController.modalPresentationStyle = .fullScreen
          self.present(authController, animated: true)
@@ -56,5 +60,17 @@ class SettingsController: UIViewController {
        print("Error signing out: %@", signOutError)
      }
     }
-    
+}
+
+// MARK: - SwiftUI
+import SwiftUI
+struct SettingsController_Previews: PreviewProvider {
+    static var previews: some View {
+        UIViewControllerPreview {
+            // Return whatever controller you want to preview
+            let viewController = UINavigationController(rootViewController: SettingsController())
+            return viewController
+        }.edgesIgnoringSafeArea(.all)
+            
+    }
 }

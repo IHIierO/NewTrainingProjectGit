@@ -30,6 +30,9 @@
 		398A05282951F98900E02110 /* ChatModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A05272951F98900E02110 /* ChatModels.swift */; };
 		398A052B29520BA400E02110 /* ChatMessageHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A052A29520BA400E02110 /* ChatMessageHeader.swift */; };
 		398A052D2952117F00E02110 /* CustomDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A052C2952117F00E02110 /* CustomDate.swift */; };
+		398F31982953235000E1F7C5 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F31972953235000E1F7C5 /* StorageManager.swift */; };
+		398F319B2953253A00E1F7C5 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 398F319A2953253A00E1F7C5 /* FirebaseStorage */; };
+		398F319F29548ACB00E1F7C5 /* DataBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F319E29548ACB00E1F7C5 /* DataBaseManager.swift */; };
 		FA436B48A2DB0DFA7851B75A /* Pods_NewTrainingProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +62,8 @@
 		398A05272951F98900E02110 /* ChatModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModels.swift; sourceTree = "<group>"; };
 		398A052A29520BA400E02110 /* ChatMessageHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageHeader.swift; sourceTree = "<group>"; };
 		398A052C2952117F00E02110 /* CustomDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDate.swift; sourceTree = "<group>"; };
+		398F31972953235000E1F7C5 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
+		398F319E29548ACB00E1F7C5 /* DataBaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBaseManager.swift; sourceTree = "<group>"; };
 		646DF55D19BCB3DA133BCFB4 /* Pods-NewTrainingProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.release.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.release.xcconfig"; sourceTree = "<group>"; };
 		7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NewTrainingProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977635C7DBA3F62A0B7EB380 /* Pods-NewTrainingProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.debug.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.debug.xcconfig"; sourceTree = "<group>"; };
@@ -70,6 +75,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA436B48A2DB0DFA7851B75A /* Pods_NewTrainingProject.framework in Frameworks */,
+				398F319B2953253A00E1F7C5 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,12 +114,7 @@
 				398A0502294B43C700E02110 /* Controllers */,
 				398A05222951F22D00E02110 /* Models */,
 				398A04F6294B3F0300E02110 /* ExtensionsAndHelpers */,
-				398A04EB294B3C8F00E02110 /* Assets.xcassets */,
-				398A04ED294B3C8F00E02110 /* LaunchScreen.storyboard */,
-				398A04DF294B3C8E00E02110 /* AppDelegate.swift */,
-				398A04E1294B3C8E00E02110 /* SceneDelegate.swift */,
-				398A04F0294B3C8F00E02110 /* Info.plist */,
-				398A0507294B477B00E02110 /* GoogleService-Info.plist */,
+				398F31962953231500E1F7C5 /* Resources */,
 				398A04E8294B3C8E00E02110 /* NewTrainingProject.xcdatamodeld */,
 			);
 			path = NewTrainingProject;
@@ -161,7 +162,6 @@
 		398A0503294B43D300E02110 /* MainControllers */ = {
 			isa = PBXGroup;
 			children = (
-				398A04E3294B3C8E00E02110 /* AuthController.swift */,
 				398A051E294DE4CB00E02110 /* ContainerController.swift */,
 				398A0516294B7BB300E02110 /* HomeController.swift */,
 				398A051C294C9CDD00E02110 /* SettingsController.swift */,
@@ -173,6 +173,7 @@
 		398A0504294B444400E02110 /* SubControllers */ = {
 			isa = PBXGroup;
 			children = (
+				398A04E3294B3C8E00E02110 /* AuthController.swift */,
 				398A0505294B445E00E02110 /* SignUpController.swift */,
 				398A0518294C862400E02110 /* MenuView.swift */,
 			);
@@ -205,6 +206,21 @@
 			path = CellForChat;
 			sourceTree = "<group>";
 		};
+		398F31962953231500E1F7C5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				398F31972953235000E1F7C5 /* StorageManager.swift */,
+				398A04DF294B3C8E00E02110 /* AppDelegate.swift */,
+				398A04E1294B3C8E00E02110 /* SceneDelegate.swift */,
+				398A04ED294B3C8F00E02110 /* LaunchScreen.storyboard */,
+				398A04EB294B3C8F00E02110 /* Assets.xcassets */,
+				398A04F0294B3C8F00E02110 /* Info.plist */,
+				398A0507294B477B00E02110 /* GoogleService-Info.plist */,
+				398F319E29548ACB00E1F7C5 /* DataBaseManager.swift */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		CE6A2C1E33C297145DEFC60F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -231,6 +247,9 @@
 			dependencies = (
 			);
 			name = NewTrainingProject;
+			packageProductDependencies = (
+				398F319A2953253A00E1F7C5 /* FirebaseStorage */,
+			);
 			productName = NewTrainingProject;
 			productReference = 398A04DC294B3C8E00E02110 /* NewTrainingProject.app */;
 			productType = "com.apple.product-type.application";
@@ -259,6 +278,9 @@
 				Base,
 			);
 			mainGroup = 398A04D3294B3C8E00E02110;
+			packageReferences = (
+				398F31992953253A00E1F7C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 398A04DD294B3C8E00E02110 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -314,12 +336,14 @@
 				398A051B294C877500E02110 /* ExtensionForSideMenu.swift in Sources */,
 				398A0500294B433000E02110 /* EasyLayouts.swift in Sources */,
 				398A05252951F25700E02110 /* ChatMessageCell.swift in Sources */,
+				398F31982953235000E1F7C5 /* StorageManager.swift in Sources */,
 				398A05282951F98900E02110 /* ChatModels.swift in Sources */,
 				398A0519294C862400E02110 /* MenuView.swift in Sources */,
 				398A0513294B599000E02110 /* DefaultUIClasses.swift in Sources */,
 				398A04EA294B3C8E00E02110 /* NewTrainingProject.xcdatamodeld in Sources */,
 				398A04FD294B426C00E02110 /* ColorHex.swift in Sources */,
 				398A052D2952117F00E02110 /* CustomDate.swift in Sources */,
+				398F319F29548ACB00E1F7C5 /* DataBaseManager.swift in Sources */,
 				398A0515294B715000E02110 /* ViewControllerHelpers.swift in Sources */,
 				398A0506294B445E00E02110 /* SignUpController.swift in Sources */,
 				398A04F9294B3F3A00E02110 /* ViewControllerPreview.swift in Sources */,
@@ -472,8 +496,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z77PMGH233;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = NewTrainingProject/Info.plist;
+				INFOPLIST_FILE = NewTrainingProject/Resources/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile photo";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select a photo for your profile";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -505,8 +531,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z77PMGH233;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = NewTrainingProject/Info.plist;
+				INFOPLIST_FILE = NewTrainingProject/Resources/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile photo";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select a photo for your profile";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -550,6 +578,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		398F31992953253A00E1F7C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		398F319A2953253A00E1F7C5 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 398F31992953253A00E1F7C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		398A04E8294B3C8E00E02110 /* NewTrainingProject.xcdatamodeld */ = {

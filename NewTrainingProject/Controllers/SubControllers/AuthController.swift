@@ -45,10 +45,12 @@ class AuthController: UIViewController {
         [emailTextField, passwordTextField, authButton, errorLabel, signUpLabel, signUpButton].forEach {
             view.addSubview($0)
         }
+        passwordTextField.delegate = self
         signUpButton.addTarget(self, action: #selector(goToSignUpController), for: .touchUpInside)
         authButton.addTarget(self, action: #selector(authenticate), for: .touchUpInside)
         errorLabel.textColor = .red
         errorLabel.alpha = 0
+        passwordTextField.isSecureTextEntry = true
     }
     
     private func setConstraints(){
@@ -97,13 +99,23 @@ class AuthController: UIViewController {
                 if error != nil {
                     self.errorLabel.alpha = 1
                 }else{
-                    let containerController = ContainerController()
-                    containerController.modalTransitionStyle = .crossDissolve
-                    containerController.modalPresentationStyle = .fullScreen
-                    self.present(containerController, animated: true)
+                    if Auth.auth().currentUser != nil {
+                        
+                        let containerController = ContainerController()
+                        containerController.modalTransitionStyle = .crossDissolve
+                        containerController.modalPresentationStyle = .fullScreen
+                        self.present(containerController, animated: true)
+                    }
                 }
             }
         }
+    }
+}
+
+extension AuthController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
     }
 }
 

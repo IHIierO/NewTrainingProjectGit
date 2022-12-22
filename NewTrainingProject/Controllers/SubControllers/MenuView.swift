@@ -6,6 +6,10 @@
 //
 
 import UIKit
+import CoreData
+import FirebaseCore
+import FirebaseAuth
+import FirebaseFirestore
 
 enum SideMenuItem: String, CaseIterable {
     case home = "Home"
@@ -20,8 +24,9 @@ class MenuView: UIView {
     lazy var width: CGFloat = self.frame.width * 0.2
     lazy var userAvatar: UIImageView = {
         let userAvatar = UIImageView(frame: .init(x: 0, y: 0, width: self.width, height: self.width))
-        userAvatar.backgroundColor = .red
         userAvatar.layer.cornerRadius = userAvatar.frame.width / 2
+        userAvatar.contentMode = .scaleAspectFill
+        userAvatar.layer.masksToBounds = true
         userAvatar.translatesAutoresizingMaskIntoConstraints = false
         return userAvatar
     }()
@@ -33,6 +38,10 @@ class MenuView: UIView {
         super.init(frame: .zero)
         setupMenuView()
         setConstraints()
+       // print("\(userAvatar.image)")
+        //userAvatar.image = fetchProfileImage()!
+       
+       // print("\(fetchProfileImage())")
     }
     
     required init?(coder: NSCoder) {
@@ -45,6 +54,7 @@ class MenuView: UIView {
         [userAvatar, userName, tableView].forEach {
             self.addSubview($0)
         }
+        fetchProfileData()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.bounces = false
@@ -70,6 +80,53 @@ class MenuView: UIView {
             tableView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor),
         ])
+    }
+    
+    private func fetchProfileData(){
+        let activituIndicator = UIActivityIndicatorView(style: .large)
+        activituIndicator.center = userAvatar.center
+        activituIndicator.startAnimating()
+        userAvatar.addSubview(activituIndicator)
+        
+        let user = Auth.auth().currentUser
+        if let user = user {
+            guard let mail = user.email else {return}
+            
+            let uid = user.uid
+            
+            DataBaseManager.shared.getUserName(user: user, label: userName) {[weak self] result in
+                switch result {
+                case .success(let userName):
+                    self?.userName.text = userName
+                case .failure(let error):
+                    print("Failed to get User Name: \(error)")
+                }
+            }
+            
+            let fileName = mail + "_profile_image.png"
+            let path = "images/" + fileName
+            
+            StorageManager.shared.downloadURL(for: path) { [weak self] results in
+                switch results {
+                case .success(let url):
+                    self?.downloadImage(imageView: self!.userAvatar, url: url)
+                    activituIndicator.removeFromSuperview()
+                case .failure(let error):
+                    print("Failed to get download URL: \(error)")
+                }
+            }
+        }
+    }
+    
+    func downloadImage(imageView: UIImageView, url: URL){
+        URLSession.shared.dataTask(with: url, completionHandler: { data, _, error in
+            guard let data = data, error == nil else {return}
+
+            DispatchQueue.main.async {
+              let image = UIImage(data: data)!
+                imageView.image = image
+            }
+        }).resume()
     }
 }
 

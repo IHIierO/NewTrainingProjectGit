@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     self.window = window
         } else {
             let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = AuthController()
+            window.rootViewController = UINavigationController(rootViewController: AuthController()) 
             window.makeKeyAndVisible()
             self.window = window
         }
