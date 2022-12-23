@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ChatController: UITableViewController {
+class ChatController: UIViewController {
     
     var textMessagesArray = [[ChatMessage]]()
     var messageFromServer = [
@@ -29,6 +29,7 @@ class ChatController: UITableViewController {
         }
     }
     
+    private let tableView = UITableView()
     private let sendTextFiend = DefaultUITextField(placeholderText: "Aa")
     private let sendButton: UIButton = {
         let button = UIButton()
@@ -49,12 +50,17 @@ class ChatController: UITableViewController {
         attemptToAssambleGroupedMessage()
         view.backgroundColor = .systemMint
         title = "Chat"
-        tableView.register(ChatMessageCell.self, forCellReuseIdentifier: "ChatMessageCell")
-        tableView.separatorStyle = .none
         view.addSubview(sendTextFiend)
         sendTextFiend.delegate = self
         view.addSubview(sendButton)
         sendButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .red
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(ChatMessageCell.self, forCellReuseIdentifier: "ChatMessageCell")
+        tableView.separatorStyle = .none
         
         NSLayoutConstraint.activate([
             sendTextFiend.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
@@ -66,14 +72,24 @@ class ChatController: UITableViewController {
             sendButton.leadingAnchor.constraint(equalTo: sendTextFiend.trailingAnchor, constant: 10),
             sendButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.1),
             sendButton.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.1),
+            
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: sendTextFiend.topAnchor)
         ])
         
+        
     }
+     
+}
+
+extension ChatController: UITableViewDelegate, UITableViewDataSource {
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return textMessagesArray.count
     }
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if let firstMessageInSection = textMessagesArray[section].first {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd.MM.yyyy"
@@ -91,18 +107,18 @@ class ChatController: UITableViewController {
         }
         return nil
     }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return textMessagesArray[section].count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatMessageCell", for: indexPath) as! ChatMessageCell
         let chatMessage = textMessagesArray[indexPath.section][indexPath.row]
         cell.chatMessage = chatMessage
         return cell
     }
 }
+
 extension ChatController: UITextFieldDelegate {
     
     @objc func sendButtonTapped(){
@@ -111,15 +127,21 @@ extension ChatController: UITextFieldDelegate {
             let sendDate = Calendar.current.dateComponents([.day, .month, .year], from: .now)
             let date = Calendar.current.date(from: sendDate)
             messageFromServer.append(contentsOf: [ChatMessage(text: text!, isIncoming: false, date: date!)])
+            textMessagesArray.removeAll()
             attemptToAssambleGroupedMessage()
             tableView.reloadData()
             sendTextFiend.text = nil
         }
     }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        let sectionIndex = textMessagesArray.endIndex
+        let rowIndex = textMessagesArray[sectionIndex-1].endIndex
+        tableView.scrollToRow(at: [sectionIndex-1,rowIndex-1], at: .bottom, animated: true)
+    }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
-        return tableView.endEditing(true)
+        return view.endEditing(true)
        
         }
 }

@@ -18,7 +18,7 @@ class DefaultUITextField: UITextField {
         
         self.placeholder = placeholderText
         self.borderStyle = .roundedRect
-        self.enablesReturnKeyAutomatically = true
+        self.returnKeyType = .done
        // self.backgroundColor = .clear
        // self.textColor = UIColor(hexString: "#324B3A")
         self.translatesAutoresizingMaskIntoConstraints = false
