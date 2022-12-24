@@ -56,3 +56,43 @@ class DefaultUILabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
 }
+//MARK: - BackButton
+class BackButton {
+    var vc: UIViewController
+    
+    func createBackButton(){
+        let backButton = UIBarButtonItem()
+        backButton.title = "Назад"
+        backButton.tintColor = UIColor(hexString: "#324B3A")
+        vc.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+    }
+   init(vc: UIViewController){
+        self.vc = vc
+    }
+}
+//MARK: - ActivityIndicator
+class DefaultActivityIndicator: UIActivityIndicatorView{
+    
+    let indicatorStyle: UIActivityIndicatorView.Style
+    
+    init(indicatorStyle:  UIActivityIndicatorView.Style) {
+        self.indicatorStyle = indicatorStyle
+        super.init(frame: .zero)
+        self.style = indicatorStyle
+    }
+    
+    func show(view: UIView){
+        view.addSubview(self)
+        self.center = view.center
+        self.startAnimating()
+    }
+    
+    func remove(){
+        self.removeFromSuperview()
+    }
+    
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}

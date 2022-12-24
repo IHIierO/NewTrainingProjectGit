@@ -83,18 +83,14 @@ class MenuView: UIView {
     }
     
     private func fetchProfileData(){
-        let activituIndicator = UIActivityIndicatorView(style: .large)
-        activituIndicator.center = userAvatar.center
-        activituIndicator.startAnimating()
-        userAvatar.addSubview(activituIndicator)
+        let activituIndicator = DefaultActivityIndicator(indicatorStyle: .medium)
+        activituIndicator.show(view: userAvatar)
         
         let user = Auth.auth().currentUser
         if let user = user {
             guard let mail = user.email else {return}
             
-            let uid = user.uid
-            
-            DataBaseManager.shared.getUserName(user: user, label: userName) {[weak self] result in
+            DataBaseManager.shared.getUserName(user: user){[weak self] result in
                 switch result {
                 case .success(let userName):
                     self?.userName.text = userName
@@ -110,7 +106,7 @@ class MenuView: UIView {
                 switch results {
                 case .success(let url):
                     self?.downloadImage(imageView: self!.userAvatar, url: url)
-                    activituIndicator.removeFromSuperview()
+                    activituIndicator.remove()
                 case .failure(let error):
                     print("Failed to get download URL: \(error)")
                 }

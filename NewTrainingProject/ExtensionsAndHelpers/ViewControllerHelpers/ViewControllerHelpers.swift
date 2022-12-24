@@ -43,6 +43,7 @@ class ViewControllerHelpers {
             viewControllers.last?.willMove(toParent: nil)
             viewControllers.last?.removeFromParent()
             viewControllers.last?.view.removeFromSuperview()
+            controller.navigationItem.rightBarButtonItem = nil
         }
     }
     
@@ -53,10 +54,11 @@ class ViewControllerHelpers {
             viewControllers.last?.willMove(toParent: nil)
             viewControllers.last?.removeFromParent()
             viewControllers.last?.view.removeFromSuperview()
+            homeController.navigationItem.rightBarButtonItem = nil
         }
         
         let settingsController = SettingsController()
-        let chatBotController = ChatController()
+        let chatBotController = AllChatsController()
         
         if controller == .settings {
             homeController.addChild(settingsController)
@@ -70,6 +72,7 @@ class ViewControllerHelpers {
             chatBotController.view.frame = homeController.view.frame
             chatBotController.didMove(toParent: homeController)
             homeController.title = chatBotController.title
+            homeController.navigationItem.rightBarButtonItem = chatBotController.navigationItem.rightBarButtonItem
         }
         
     }

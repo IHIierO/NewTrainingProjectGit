@@ -33,6 +33,8 @@
 		398F31982953235000E1F7C5 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F31972953235000E1F7C5 /* StorageManager.swift */; };
 		398F319B2953253A00E1F7C5 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 398F319A2953253A00E1F7C5 /* FirebaseStorage */; };
 		398F319F29548ACB00E1F7C5 /* DataBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F319E29548ACB00E1F7C5 /* DataBaseManager.swift */; };
+		398F31A12955DD3C00E1F7C5 /* NewChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F31A02955DD3C00E1F7C5 /* NewChatController.swift */; };
+		398F31A32955E00D00E1F7C5 /* AllChatsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F31A22955E00D00E1F7C5 /* AllChatsController.swift */; };
 		FA436B48A2DB0DFA7851B75A /* Pods_NewTrainingProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +66,8 @@
 		398A052C2952117F00E02110 /* CustomDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDate.swift; sourceTree = "<group>"; };
 		398F31972953235000E1F7C5 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		398F319E29548ACB00E1F7C5 /* DataBaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBaseManager.swift; sourceTree = "<group>"; };
+		398F31A02955DD3C00E1F7C5 /* NewChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatController.swift; sourceTree = "<group>"; };
+		398F31A22955E00D00E1F7C5 /* AllChatsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChatsController.swift; sourceTree = "<group>"; };
 		646DF55D19BCB3DA133BCFB4 /* Pods-NewTrainingProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.release.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.release.xcconfig"; sourceTree = "<group>"; };
 		7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NewTrainingProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977635C7DBA3F62A0B7EB380 /* Pods-NewTrainingProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.debug.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.debug.xcconfig"; sourceTree = "<group>"; };
@@ -165,7 +169,7 @@
 				398A051E294DE4CB00E02110 /* ContainerController.swift */,
 				398A0516294B7BB300E02110 /* HomeController.swift */,
 				398A051C294C9CDD00E02110 /* SettingsController.swift */,
-				398A0520294DF72C00E02110 /* ChatController.swift */,
+				398F31A22955E00D00E1F7C5 /* AllChatsController.swift */,
 			);
 			path = MainControllers;
 			sourceTree = "<group>";
@@ -176,6 +180,8 @@
 				398A04E3294B3C8E00E02110 /* AuthController.swift */,
 				398A0505294B445E00E02110 /* SignUpController.swift */,
 				398A0518294C862400E02110 /* MenuView.swift */,
+				398F31A02955DD3C00E1F7C5 /* NewChatController.swift */,
+				398A0520294DF72C00E02110 /* ChatController.swift */,
 			);
 			path = SubControllers;
 			sourceTree = "<group>";
@@ -210,13 +216,13 @@
 			isa = PBXGroup;
 			children = (
 				398F31972953235000E1F7C5 /* StorageManager.swift */,
+				398F319E29548ACB00E1F7C5 /* DataBaseManager.swift */,
 				398A04DF294B3C8E00E02110 /* AppDelegate.swift */,
 				398A04E1294B3C8E00E02110 /* SceneDelegate.swift */,
 				398A04ED294B3C8F00E02110 /* LaunchScreen.storyboard */,
 				398A04EB294B3C8F00E02110 /* Assets.xcassets */,
 				398A04F0294B3C8F00E02110 /* Info.plist */,
 				398A0507294B477B00E02110 /* GoogleService-Info.plist */,
-				398F319E29548ACB00E1F7C5 /* DataBaseManager.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -350,7 +356,9 @@
 				398A0517294B7BB300E02110 /* HomeController.swift in Sources */,
 				398A051D294C9CDD00E02110 /* SettingsController.swift in Sources */,
 				398A0521294DF72C00E02110 /* ChatController.swift in Sources */,
+				398F31A12955DD3C00E1F7C5 /* NewChatController.swift in Sources */,
 				398A04E4294B3C8E00E02110 /* AuthController.swift in Sources */,
+				398F31A32955E00D00E1F7C5 /* AllChatsController.swift in Sources */,
 				398A052B29520BA400E02110 /* ChatMessageHeader.swift in Sources */,
 				398A04E0294B3C8E00E02110 /* AppDelegate.swift in Sources */,
 				398A04E2294B3C8E00E02110 /* SceneDelegate.swift in Sources */,
@@ -504,6 +512,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

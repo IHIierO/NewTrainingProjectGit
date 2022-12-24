@@ -6,27 +6,45 @@
 //
 
 import UIKit
+import FirebaseCore
+import FirebaseFirestore
+import FirebaseAuth
 
 class ChatController: UIViewController {
     
-    var textMessagesArray = [[ChatMessage]]()
-    var messageFromServer = [
-        ChatMessage(text: "Привет", isIncoming: true, date: Date.dateFromCustomString(string: "19.12.2022")) ,
-        ChatMessage(text: "Чем сегодня занимался?", isIncoming: true, date: Date.dateFromCustomString(string: "19.12.2022")),
-        ChatMessage(text: "Привет, да ничем особенным. Программировал пол дня, покушал. Посмотрел видосы.", isIncoming: false, date: Date.dateFromCustomString(string: "20.12.2022")),
-        ChatMessage(text: "У тебя как дела?", isIncoming: false, date: Date.dateFromCustomString(string: "20.12.2022")),
-        ChatMessage(text: "Да у меня ничего особенного, как обычно одна работа(", isIncoming: true, date: Date.dateFromCustomString(string: "20.12.2022"))
-    ]
-    private func attemptToAssambleGroupedMessage(){
-        let groupedMessage = Dictionary(grouping: messageFromServer) { message -> Date in
-            return message.date
+    public var otherUserUid: String
+    public var isNewChat = false
+    
+    private var selfSender: ChatUsers? {
+        
+        let user = Auth.auth().currentUser
+        
+        if let user = user {
+            guard let email = user.email else {return nil}
+            
+          return ChatUsers(firstName: "String",
+                      lastName: "String",
+                      email: email,
+                      uid: user.uid)
         }
         
-        let sortedKeys = groupedMessage.keys.sorted()
-        sortedKeys.forEach { (key) in
-            let values = groupedMessage[key]
-            textMessagesArray.append(values ?? [])
-        }
+        return nil
+    }
+    
+    var textMessagesArray = [[ChatMessage]]()
+//    var messageFromServer = [
+//
+//    ]
+    private func attemptToAssambleGroupedMessage(){
+//        let groupedMessage = Dictionary(grouping: messageFromServer) { message -> Date in
+//            return message.date
+//        }
+//
+//        let sortedKeys = groupedMessage.keys.sorted()
+//        sortedKeys.forEach { (key) in
+//            let values = groupedMessage[key]
+//            textMessagesArray.append(values ?? [])
+//        }
     }
     
     private let tableView = UITableView()
@@ -41,6 +59,15 @@ class ChatController: UIViewController {
         return button
     }()
     
+    init(with uid: String){
+        self.otherUserUid = uid
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupController()
@@ -48,6 +75,7 @@ class ChatController: UIViewController {
     
     private func setupController(){
         attemptToAssambleGroupedMessage()
+        BackButton(vc: self).createBackButton()
         view.backgroundColor = .systemMint
         title = "Chat"
         view.addSubview(sendTextFiend)
@@ -73,7 +101,7 @@ class ChatController: UIViewController {
             sendButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.1),
             sendButton.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.1),
             
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: sendTextFiend.topAnchor)
@@ -122,22 +150,40 @@ extension ChatController: UITableViewDelegate, UITableViewDataSource {
 extension ChatController: UITextFieldDelegate {
     
     @objc func sendButtonTapped(){
-        let text = self.sendTextFiend.text
-        if !text!.isEmpty {
-            let sendDate = Calendar.current.dateComponents([.day, .month, .year], from: .now)
-            let date = Calendar.current.date(from: sendDate)
-            messageFromServer.append(contentsOf: [ChatMessage(text: text!, isIncoming: false, date: date!)])
-            textMessagesArray.removeAll()
-            attemptToAssambleGroupedMessage()
-            tableView.reloadData()
-            sendTextFiend.text = nil
+        let text = self.sendTextFiend.text!
+        guard !text.replacingOccurrences(of: " ", with: "").isEmpty,
+        let selfSender = self.selfSender,
+        let messageId = createMessageId() else {
+            return
         }
+        
+        if isNewChat {
+            // create chat in db
+            let message = ChatMessage(sender: selfSender, messageID: messageId, text: text, isIncoming: false, date: Date())
+            DataBaseManager.shared.createNewChat(with: otherUserUid, firstMessage: message) { success in
+                if success {
+                    print("message send")
+                } else {
+                    print("failed to send")
+                }
+            }
+        } else {
+            // append chat data
+        }
+        
+       
+    }
+    
+    private func createMessageId() -> String? {
+        let newId = "\(otherUserUid)_\(selfSender?.uid)"
+        
+        return newId
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        let sectionIndex = textMessagesArray.endIndex
-        let rowIndex = textMessagesArray[sectionIndex-1].endIndex
-        tableView.scrollToRow(at: [sectionIndex-1,rowIndex-1], at: .bottom, animated: true)
+//        let sectionIndex = textMessagesArray.endIndex
+//        let rowIndex = textMessagesArray[sectionIndex-1].endIndex
+//        tableView.scrollToRow(at: [sectionIndex-1,rowIndex-1], at: .bottom, animated: true)
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -152,7 +198,7 @@ struct ChatBotController_Previews: PreviewProvider {
     static var previews: some View {
         UIViewControllerPreview {
             // Return whatever controller you want to preview
-            let viewController = UINavigationController(rootViewController: ChatController())
+            let viewController = UINavigationController(rootViewController: ChatController(with: ""))
             return viewController
         }.edgesIgnoringSafeArea(.all)
             

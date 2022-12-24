@@ -13,4 +13,15 @@ extension Date {
         dateFormatter.dateFormat = "dd.MM.yyyy"
         return dateFormatter.date(from: string) ?? Date()
     }
+    
 }
+
+
+class CustomDate {
+    static func dateString(date: Date) -> String{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        return dateFormatter.string(from: date)
+    }
+}
+

@@ -24,7 +24,7 @@ class SignUpController: UIViewController {
         return imageView
     }()
     
-    var nameTextField = DefaultUITextField(placeholderText: "Enter your Name")
+    var firstNameTextField = DefaultUITextField(placeholderText: "Enter your Name")
     var lastNameTextField = DefaultUITextField(placeholderText: "Enter your LastName")
     var emailTextField = DefaultUITextField(placeholderText: "Enter your Email")
     var passwordTextField = DefaultUITextField(placeholderText: "Enter your Password")
@@ -48,7 +48,7 @@ class SignUpController: UIViewController {
 
     private func setupController(){
         view.backgroundColor = .white
-        [profileImage,nameTextField, lastNameTextField, emailTextField, passwordTextField, signUpButton, errorLabel].forEach {
+        [profileImage,firstNameTextField, lastNameTextField, emailTextField, passwordTextField, signUpButton, errorLabel].forEach {
             view.addSubview($0)
         }
         signUpButton.addTarget(self, action: #selector(createNewUser), for: .touchUpInside)
@@ -75,13 +75,13 @@ class SignUpController: UIViewController {
             profileImage.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
             profileImage.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
             
-            nameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            nameTextField.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 20),
-            nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            nameTextField.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.05),
+            firstNameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            firstNameTextField.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 20),
+            firstNameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            firstNameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            firstNameTextField.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.05),
             
-            lastNameTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 10),
+            lastNameTextField.topAnchor.constraint(equalTo: firstNameTextField.bottomAnchor, constant: 10),
             lastNameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             lastNameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             lastNameTextField.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.05),
@@ -110,7 +110,7 @@ class SignUpController: UIViewController {
     
     @objc func createNewUser(){
         
-        let error = ViewControllerHelpers.checkValidSignUp(nameTextField: nameTextField, lastNameTextField: lastNameTextField, emailTextField: emailTextField, passwordTextField: passwordTextField)
+        let error = ViewControllerHelpers.checkValidSignUp(nameTextField: firstNameTextField, lastNameTextField: lastNameTextField, emailTextField: emailTextField, passwordTextField: passwordTextField)
         
         if error != nil {
             errorLabel.alpha = 1
@@ -120,30 +120,22 @@ class SignUpController: UIViewController {
                 if error != nil {
                     self.errorLabel.text = "\(error?.localizedDescription)"
                 } else {
-                    let dataBase = Firestore.firestore()
-                    dataBase.collection("users").addDocument(data: [
-                        "name" : self.nameTextField.text!,
-                        "lastName" : self.lastNameTextField.text!,
-                        "uid" : result!.user.uid
-                     ]) { error in
-                         if error != nil {
-                             self.errorLabel.text = "Error savind user in dataBase"
-                         }
-                         print("\(result!.user.uid)")
-                         guard let image = self.profileImage.image, let data = image.pngData() else {
-                             return
-                         }
-                         let fileName = "\(self.emailTextField.text!.lowercased())_profile_image.png"
-                         StorageManager.shared.uploadProfileImage(with: data, fileName: fileName) { results in
-                             switch results {
-                             case .success(let downloadURL):
-                                 UserDefaults.standard.set(downloadURL, forKey: "profile_image_url")
-                                 print(downloadURL)
-                             case .failure(let error):
-                                 print("Storage manager error: \(error)")
-                             }
-                         }
+                    DataBaseManager.shared.saveNewUser(users: ChatUsers(firstName: self.firstNameTextField.text!, lastName: self.lastNameTextField.text!, email: self.emailTextField.text!, uid: (result?.user.uid)!), errorLabel: self.errorLabel)
+                    
+                    guard let image = self.profileImage.image, let data = image.pngData() else {
+                        return
                     }
+                    let fileName = "\(self.emailTextField.text!.lowercased())_profile_image.png"
+                    StorageManager.shared.uploadProfileImage(with: data, fileName: fileName) { results in
+                        switch results {
+                        case .success(let downloadURL):
+                            UserDefaults.standard.set(downloadURL, forKey: "profile_image_url")
+                            print(downloadURL)
+                        case .failure(let error):
+                            print("Storage manager error: \(error)")
+                        }
+                    }
+                    
                     if Auth.auth().currentUser != nil {
                         
                         let containerController = ContainerController()
@@ -155,7 +147,6 @@ class SignUpController: UIViewController {
             }
         }
     }
-
 }
 
 extension SignUpController: UIImagePickerControllerDelegate, PHPickerViewControllerDelegate, UINavigationControllerDelegate {
