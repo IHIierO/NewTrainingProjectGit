@@ -125,7 +125,7 @@ class SignUpController: UIViewController {
                     guard let image = self.profileImage.image, let data = image.pngData() else {
                         return
                     }
-                    let fileName = "\(self.emailTextField.text!.lowercased())_profile_image.png"
+                    let fileName = "\(result!.user.uid)_profile_image.png"
                     StorageManager.shared.uploadProfileImage(with: data, fileName: fileName) { results in
                         switch results {
                         case .success(let downloadURL):

@@ -8,7 +8,7 @@
 import UIKit
 
 struct ChatMessage {
-    var sender: ChatUsers
+    var sender: Sender
     var messageID: String
     let text: String
     let isIncoming: Bool

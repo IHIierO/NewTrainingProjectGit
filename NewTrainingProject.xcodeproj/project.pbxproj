@@ -35,6 +35,8 @@
 		398F319F29548ACB00E1F7C5 /* DataBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F319E29548ACB00E1F7C5 /* DataBaseManager.swift */; };
 		398F31A12955DD3C00E1F7C5 /* NewChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F31A02955DD3C00E1F7C5 /* NewChatController.swift */; };
 		398F31A32955E00D00E1F7C5 /* AllChatsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F31A22955E00D00E1F7C5 /* AllChatsController.swift */; };
+		398F31A52958601800E1F7C5 /* AllChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F31A42958601800E1F7C5 /* AllChatCell.swift */; };
+		398F31A729586FF900E1F7C5 /* DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F31A629586FF900E1F7C5 /* DownloadImage.swift */; };
 		FA436B48A2DB0DFA7851B75A /* Pods_NewTrainingProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +70,8 @@
 		398F319E29548ACB00E1F7C5 /* DataBaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBaseManager.swift; sourceTree = "<group>"; };
 		398F31A02955DD3C00E1F7C5 /* NewChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatController.swift; sourceTree = "<group>"; };
 		398F31A22955E00D00E1F7C5 /* AllChatsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChatsController.swift; sourceTree = "<group>"; };
+		398F31A42958601800E1F7C5 /* AllChatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChatCell.swift; sourceTree = "<group>"; };
+		398F31A629586FF900E1F7C5 /* DownloadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadImage.swift; sourceTree = "<group>"; };
 		646DF55D19BCB3DA133BCFB4 /* Pods-NewTrainingProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.release.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.release.xcconfig"; sourceTree = "<group>"; };
 		7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NewTrainingProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977635C7DBA3F62A0B7EB380 /* Pods-NewTrainingProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.debug.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.debug.xcconfig"; sourceTree = "<group>"; };
@@ -142,6 +146,7 @@
 				398A0512294B599000E02110 /* DefaultUIClasses.swift */,
 				398A051A294C877500E02110 /* ExtensionForSideMenu.swift */,
 				398A052C2952117F00E02110 /* CustomDate.swift */,
+				398F31A629586FF900E1F7C5 /* DownloadImage.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -206,6 +211,7 @@
 		398A052929520B8200E02110 /* CellForChat */ = {
 			isa = PBXGroup;
 			children = (
+				398F31A42958601800E1F7C5 /* AllChatCell.swift */,
 				398A05242951F25700E02110 /* ChatMessageCell.swift */,
 				398A052A29520BA400E02110 /* ChatMessageHeader.swift */,
 			);
@@ -342,7 +348,9 @@
 				398A051B294C877500E02110 /* ExtensionForSideMenu.swift in Sources */,
 				398A0500294B433000E02110 /* EasyLayouts.swift in Sources */,
 				398A05252951F25700E02110 /* ChatMessageCell.swift in Sources */,
+				398F31A729586FF900E1F7C5 /* DownloadImage.swift in Sources */,
 				398F31982953235000E1F7C5 /* StorageManager.swift in Sources */,
+				398F31A52958601800E1F7C5 /* AllChatCell.swift in Sources */,
 				398A05282951F98900E02110 /* ChatModels.swift in Sources */,
 				398A0519294C862400E02110 /* MenuView.swift in Sources */,
 				398A0513294B599000E02110 /* DefaultUIClasses.swift in Sources */,

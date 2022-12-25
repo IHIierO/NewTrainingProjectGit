@@ -23,5 +23,11 @@ class CustomDate {
         dateFormatter.dateFormat = "dd.MM.yyyy"
         return dateFormatter.string(from: date)
     }
+    
+    static func dateFromCustomString(string: String) -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        return dateFormatter.date(from: string)!
+    }
 }
 

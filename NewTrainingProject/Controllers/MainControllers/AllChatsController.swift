@@ -6,24 +6,63 @@
 //
 
 import UIKit
+import FirebaseCore
+import FirebaseAuth
+import FirebaseFirestore
+
+struct Chats {
+    let id: String
+    let name: String
+    let otherUserId: String
+    let latestMessage: LatestMessage
+}
+
+struct LatestMessage {
+    let date: String
+    let text: String
+    let isREad: Bool
+}
+
 
 class AllChatsController: UITableViewController {
     
-    private var chats = [
-    "Драконя Вошка"
-    ]
+    private var chats = [Chats]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupController()
+        startListeningForChats()
     }
     
     private func setupController(){
         title = "AllChatsController"
         view.backgroundColor = .systemBackground
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "chat")
+        tableView.register(AllChatCell.self, forCellReuseIdentifier: AllChatCell.id)
         BackButton(vc: self).createBackButton()
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus.message.fill"), style: .done, target: self, action: #selector(goToNewChat))
+    }
+    
+    private func startListeningForChats(){
+        let user = Auth.auth().currentUser
+        if let user = user{
+            
+            DataBaseManager.shared.getAllChats(for: user.uid) { [weak self] result in
+                switch result{
+                case .success(let chats):
+                    guard !chats.isEmpty else {
+                        print("chats is empty")
+                        return
+                    }
+                    
+                    self?.chats = chats
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                    }
+                case .failure(let error):
+                    print("failed to get chat: \(error)")
+                }
+            }
+        }
     }
     
     @objc func goToNewChat(){
@@ -40,33 +79,36 @@ class AllChatsController: UITableViewController {
         guard let userName = result["name"], let userUid = result["uid"] else {
             return
         }
-        let viewController = ChatController(with: (userUid as? String)!)
+        let viewController = ChatController(with: (userUid as? String)!, id: "")
         viewController.title = userName as? String
         viewController.isNewChat = true
         viewController.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(viewController, animated: true)
     }
-    
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
+   
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return chats.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "chat", for: indexPath)
-        var content = cell.defaultContentConfiguration()
-        content.text = chats[indexPath.row]
-        cell.accessoryType = .disclosureIndicator
-        cell.contentConfiguration = content
+        
+        let model = chats[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: AllChatCell.id, for: indexPath) as! AllChatCell
+        cell.configure(with: model)
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        tableView.deselectRow(at: indexPath, animated: true)
+        let model = chats[indexPath.row]
+        let viewController = ChatController(with: model.otherUserId, id: model.id)
+        viewController.title = model.name
+        viewController.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120
     }
 }
 

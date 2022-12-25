@@ -13,25 +13,24 @@ import FirebaseAuth
 class ChatController: UIViewController {
     
     public var otherUserUid: String
+    private var chatUid: String?
     public var isNewChat = false
     
-    private var selfSender: ChatUsers? {
+    private var selfSender: Sender? {
         
         let user = Auth.auth().currentUser
         
         if let user = user {
-            guard let email = user.email else {return nil}
+            let userId = user.uid
             
-          return ChatUsers(firstName: "String",
-                      lastName: "String",
-                      email: email,
-                      uid: user.uid)
+          return Sender(photoURL: "", senderId: userId, displayName: "Артем Воробьев")
         }
         
         return nil
     }
     
-    var textMessagesArray = [[ChatMessage]]()
+    
+    var textMessagesArray = [ChatMessage]()
 //    var messageFromServer = [
 //
 //    ]
@@ -59,9 +58,14 @@ class ChatController: UIViewController {
         return button
     }()
     
-    init(with uid: String){
+    init(with uid: String, id: String){
+        self.chatUid = id
         self.otherUserUid = uid
         super.init(nibName: nil, bundle: nil)
+        
+        if let chatUid = chatUid {
+            listenForMessage(id: chatUid)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -71,13 +75,13 @@ class ChatController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupController()
+        
     }
     
     private func setupController(){
         attemptToAssambleGroupedMessage()
         BackButton(vc: self).createBackButton()
         view.backgroundColor = .systemMint
-        title = "Chat"
         view.addSubview(sendTextFiend)
         sendTextFiend.delegate = self
         view.addSubview(sendButton)
@@ -109,6 +113,25 @@ class ChatController: UIViewController {
         
         
     }
+    
+    private func listenForMessage(id: String){
+        DataBaseManager.shared.getAllMessagesForChat(with: id) {[weak self] result in
+            switch result {
+            case .success(let messages):
+                guard !messages.isEmpty else {
+                    return
+                }
+                self?.textMessagesArray = messages
+                
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+                
+            case .failure(let error):
+                print("Failed to get messages: \(error)")
+            }
+        }
+    }
      
 }
 
@@ -118,7 +141,7 @@ extension ChatController: UITableViewDelegate, UITableViewDataSource {
         return textMessagesArray.count
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if let firstMessageInSection = textMessagesArray[section].first {
+        if let firstMessageInSection = textMessagesArray.first {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd.MM.yyyy"
             let dateString = dateFormatter.string(from: firstMessageInSection.date)
@@ -136,12 +159,12 @@ extension ChatController: UITableViewDelegate, UITableViewDataSource {
         return nil
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return textMessagesArray[section].count
+        return textMessagesArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatMessageCell", for: indexPath) as! ChatMessageCell
-        let chatMessage = textMessagesArray[indexPath.section][indexPath.row]
+        let chatMessage = textMessagesArray[indexPath.row]
         cell.chatMessage = chatMessage
         return cell
     }
@@ -160,7 +183,7 @@ extension ChatController: UITextFieldDelegate {
         if isNewChat {
             // create chat in db
             let message = ChatMessage(sender: selfSender, messageID: messageId, text: text, isIncoming: false, date: Date())
-            DataBaseManager.shared.createNewChat(with: otherUserUid, firstMessage: message) { success in
+            DataBaseManager.shared.createNewChat(with: otherUserUid, name: self.title ?? "User", firstMessage: message) { success in
                 if success {
                     print("message send")
                 } else {
@@ -175,7 +198,7 @@ extension ChatController: UITextFieldDelegate {
     }
     
     private func createMessageId() -> String? {
-        let newId = "\(otherUserUid)_\(selfSender?.uid)"
+        let newId = "\(otherUserUid)_\(selfSender!.senderId)"
         
         return newId
     }
@@ -198,7 +221,7 @@ struct ChatBotController_Previews: PreviewProvider {
     static var previews: some View {
         UIViewControllerPreview {
             // Return whatever controller you want to preview
-            let viewController = UINavigationController(rootViewController: ChatController(with: ""))
+            let viewController = UINavigationController(rootViewController: ChatController(with: "", id: ""))
             return viewController
         }.edgesIgnoringSafeArea(.all)
             

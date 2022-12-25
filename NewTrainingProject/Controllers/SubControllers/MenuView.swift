@@ -88,7 +88,7 @@ class MenuView: UIView {
         
         let user = Auth.auth().currentUser
         if let user = user {
-            guard let mail = user.email else {return}
+            let uid = user.uid
             
             DataBaseManager.shared.getUserName(user: user){[weak self] result in
                 switch result {
@@ -99,7 +99,7 @@ class MenuView: UIView {
                 }
             }
             
-            let fileName = mail + "_profile_image.png"
+            let fileName = uid + "_profile_image.png"
             let path = "images/" + fileName
             
             StorageManager.shared.downloadURL(for: path) { [weak self] results in
