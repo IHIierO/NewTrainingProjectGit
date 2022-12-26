@@ -32,6 +32,7 @@ class AllChatsController: UITableViewController {
         super.viewDidLoad()
         setupController()
         startListeningForChats()
+        
     }
     
     private func setupController(){
@@ -49,6 +50,7 @@ class AllChatsController: UITableViewController {
             DataBaseManager.shared.getAllChats(for: user.uid) { [weak self] result in
                 switch result{
                 case .success(let chats):
+                    
                     guard !chats.isEmpty else {
                         print("chats is empty")
                         return
@@ -79,7 +81,7 @@ class AllChatsController: UITableViewController {
         guard let userName = result["name"], let userUid = result["uid"] else {
             return
         }
-        let viewController = ChatController(with: (userUid as? String)!, id: "")
+        let viewController = ChatController(with: (userUid as? String)!, id: nil)
         viewController.title = userName as? String
         viewController.isNewChat = true
         viewController.navigationItem.largeTitleDisplayMode = .never

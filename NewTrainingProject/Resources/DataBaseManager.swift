@@ -68,6 +68,16 @@ extension DataBaseManager {
     public func createNewChat(with otherUserUid: String, name: String, firstMessage: ChatMessage, completion: @escaping (Bool) -> Void){
         let user = Auth.auth().currentUser
         if let user = user{
+            var displayName: String = ""
+            DataBaseManager.shared.getUserName(user: user){result in
+                switch result {
+                case .success(let userName):
+                    displayName = userName
+                case .failure(let error):
+                    print("Failed to get User Name: \(error)")
+                }
+            }
+            
             let reference = dataBase.collection("users")
             reference.document("\(user.uid)").getDocument { snapshot, error in
                 guard var document = snapshot?.data() as? [String: Any] else {
@@ -76,8 +86,6 @@ extension DataBaseManager {
                     return
                 }
                 
-                let messageDate = firstMessage.date
-                let dateString = CustomDate.dateString(date: messageDate)
                 let chatId = "chat_\(firstMessage.messageID)"
                 
                 let newChatData: [String: Any] = [
@@ -85,13 +93,24 @@ extension DataBaseManager {
                     "name": name,
                     "otherUserUid": otherUserUid,
                     "latestMessage": [
-                        "date": dateString,
+                        "date": firstMessage.date,
                         "message": firstMessage.text,
                         "is_read": false as Any
                     ]
                 ]
                 
-                reference.document("\(user.uid)").collection("userChats").document("\(chatId)").setData(newChatData) {[weak self] error in
+                let recipient_newChatData: [String: Any] = [
+                    "id": chatId,
+                    "name": displayName,
+                    "otherUserUid": user.uid,
+                    "latestMessage": [
+                        "date": firstMessage.date,
+                        "message": firstMessage.text,
+                        "is_read": true as Any
+                    ]
+                ]
+                // update recipient user chat
+                reference.document("\(otherUserUid)").collection("userChats").document("\(chatId)").setData(recipient_newChatData) {[weak self] error in
                     guard error == nil else {
                         completion(false)
                         return
@@ -99,27 +118,14 @@ extension DataBaseManager {
                     self?.finishCreatingChat(chatId: chatId, name: name, firstMessage: firstMessage, completion: completion)
                 }
                 
-//                if var chat = document["userChat"] as? [[String: Any]] {
-//                    chat.append(newChatData)
-//                    document["userChat"] = chat
-//                    reference.document("\(user.uid)").collection("userChats").document("\(chatId)").setData(document) { [weak self] error in
-//                        guard error == nil else {
-//                            completion(false)
-//                            return
-//                        }
-//                        self?.finishCreatingChat(chatId: chatId, name: name, firstMessage: firstMessage, completion: completion)
-//                    }
-//                } else {
-//                    // reference.document("\(user.uid)")
-//                    document["userChat"] = [newChatData]
-//                    reference.document("\(user.uid)").collection("userChats").document("\(chatId)").setData(document) {[weak self] error in
-//                        guard error == nil else {
-//                            completion(false)
-//                            return
-//                        }
-//                        self?.finishCreatingChat(chatId: chatId, name: name, firstMessage: firstMessage, completion: completion)
-//                    }
-//                }
+                // update current user chat
+                reference.document("\(user.uid)").collection("userChats").document("\(chatId)").setData(newChatData) {[weak self] error in
+                    guard error == nil else {
+                        completion(false)
+                        return
+                    }
+                    self?.finishCreatingChat(chatId: chatId, name: name, firstMessage: firstMessage, completion: completion)
+                }
             }
         }
     }
@@ -129,15 +135,12 @@ extension DataBaseManager {
         let user = Auth.auth().currentUser
         
         if let user = user {
-            
-            let messageDate = firstMessage.date
-            let dateString = CustomDate.dateString(date: messageDate)
-            
+        
             let collectionMessage: [String: Any] = [
                 "id": firstMessage.messageID,
                 "type": "text",
                 "content": firstMessage.text,
-                "date": dateString,
+                "date": firstMessage.date,
                 "sender_uid": user.uid as Any,
                 "is_read": false,
                 "name": name
@@ -166,19 +169,21 @@ extension DataBaseManager {
         dataBase.collection("users").document("\(userUid)").collection("userChats").getDocuments { snapshot, error in
             
             let document = snapshot!.documents
-            
             let chats: [Chats] = document.compactMap { dictionary in
                 
                 guard let chatId = dictionary["id"] as? String,
                       let name = dictionary["name"] as? String,
                       let otherUserUid = dictionary["otherUserUid"] as? String,
                       let latestMessage = dictionary["latestMessage"] as? [String: Any],
-                      let date = latestMessage["date"] as? String,
+                      let date = latestMessage["date"] as? Timestamp,
                       let message = latestMessage["message"] as? String,
                       let isRead = latestMessage["is_read"] as? Bool else {
-                    return nil
+                    let latestMessageObject = LatestMessage(date: "error", text: "error", isREad: false)
+                    return Chats(id: "error", name: "error", otherUserId: "error", latestMessage: latestMessageObject)
                 }
-                let latestMessageObject = LatestMessage(date: date, text: message, isREad: isRead)
+                
+                let dateString = CustomDate.dateStringFromFirestone(stamp: date)
+                let latestMessageObject = LatestMessage(date: dateString, text: message, isREad: isRead)
                 return Chats(id: chatId, name: name, otherUserId: otherUserUid, latestMessage: latestMessageObject)
                 
             }
@@ -186,7 +191,7 @@ extension DataBaseManager {
         } 
     }
     /// Get all messages for a given chat
-    public func getAllMessagesForChat(with id: String, completion: @escaping (Result<[ChatMessage],Error>) -> Void){
+    public func getAllMessagesForChat(with id: String, forSender: Sender, completion: @escaping (Result<[ChatMessage],Error>) -> Void){
         
         
         dataBase.collection("chats").document("\(id)").collection("messages").getDocuments { snapshot, error in
@@ -195,30 +200,59 @@ extension DataBaseManager {
             
             let messages: [ChatMessage] = document.compactMap { dictionary in
                 
-                let dateFormater = DateFormatter()
-                
                 guard let name = dictionary["name"] as? String,
                 let isRead = dictionary["is_read"] as? Bool,
                 let messageId = dictionary["id"] as? String,
                 let content = dictionary["content"] as? String,
                 let senderUid = dictionary["sender_uid"] as? String,
                 let type = dictionary["type"] as? String,
-                let dateString = dictionary["date"] as? String else {
+                let date = dictionary["date"] as? Timestamp else {
                     print("Document error")
                     let sender = Sender(photoURL: "", senderId: "", displayName: "")
-                    return ChatMessage(sender: sender, messageID: "error", text: "error", isIncoming: true, date: Date())
+                    return ChatMessage(sender: sender, messageID: "error", text: "error", isIncoming: false, date: Date())
                 }
-                let date = Date.dateFromCustomString(string: dateString)
+                
                 let sender = Sender(photoURL: "", senderId: senderUid, displayName: name)
-                return ChatMessage(sender: sender, messageID: messageId, text: content, isIncoming: true, date: date)
+                
+                if senderUid == forSender.senderId {
+                    return ChatMessage(sender: sender, messageID: messageId, text: content, isIncoming: isRead, date: date.dateValue())
+                } else {
+                    return ChatMessage(sender: sender, messageID: messageId, text: content, isIncoming: true, date: date.dateValue())
+                }
             }
-            print("Document: -\(messages)")
             completion(.success(messages))
+            
         }
     }
     /// Send message with target chat and message
-    public func sendMessage(to chat: String, message: ChatMessage, completion: @escaping (Bool) -> Void){
+    public func sendMessage(to chat: String, name: String, message: ChatMessage, completion: @escaping (Bool) -> Void){
         
+        let user = Auth.auth().currentUser
+        
+        if let user = user {
+            
+            let reference = dataBase.collection("chats")
+            reference.document("\(chat)").getDocument { snapshot, error in
+                
+                let collectionMessage: [String: Any] = [
+                    "id": message.messageID,
+                    "type": "text",
+                    "content": message.text,
+                    "date": message.date,
+                    "sender_uid": user.uid as Any,
+                    "is_read": false,
+                    "name": name
+                ]
+                
+                reference.document("\(chat)").collection("messages").document("\(message.messageID)").setData(collectionMessage) { error in
+                    guard error == nil else {
+                        completion(false)
+                        return
+                    }
+                    completion(true)
+                }
+            }
+        }
     }
 }
 

@@ -15,6 +15,7 @@ class ChatController: UIViewController {
     public var otherUserUid: String
     private var chatUid: String?
     public var isNewChat = false
+    lazy var displayName: String = ""
     
     private var selfSender: Sender? {
         
@@ -23,7 +24,16 @@ class ChatController: UIViewController {
         if let user = user {
             let userId = user.uid
             
-          return Sender(photoURL: "", senderId: userId, displayName: "Артем Воробьев")
+            DataBaseManager.shared.getUserName(user: user){[weak self] result in
+                switch result {
+                case .success(let userName):
+                    self?.displayName = userName
+                case .failure(let error):
+                    print("Failed to get User Name: \(error)")
+                }
+            }
+            
+          return Sender(photoURL: "", senderId: userId, displayName: displayName)
         }
         
         return nil
@@ -58,14 +68,10 @@ class ChatController: UIViewController {
         return button
     }()
     
-    init(with uid: String, id: String){
+    init(with uid: String, id: String?){
         self.chatUid = id
         self.otherUserUid = uid
         super.init(nibName: nil, bundle: nil)
-        
-        if let chatUid = chatUid {
-            listenForMessage(id: chatUid)
-        }
     }
     
     required init?(coder: NSCoder) {
@@ -76,6 +82,13 @@ class ChatController: UIViewController {
         super.viewDidLoad()
         setupController()
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let chatUid = chatUid {
+           listenForMessage(id: chatUid)
+        } 
     }
     
     private func setupController(){
@@ -115,7 +128,7 @@ class ChatController: UIViewController {
     }
     
     private func listenForMessage(id: String){
-        DataBaseManager.shared.getAllMessagesForChat(with: id) {[weak self] result in
+        DataBaseManager.shared.getAllMessagesForChat(with: id, forSender: self.selfSender!) {[weak self] result in
             switch result {
             case .success(let messages):
                 guard !messages.isEmpty else {
@@ -137,9 +150,6 @@ class ChatController: UIViewController {
 
 extension ChatController: UITableViewDelegate, UITableViewDataSource {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return textMessagesArray.count
-    }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if let firstMessageInSection = textMessagesArray.first {
             let dateFormatter = DateFormatter()
@@ -164,7 +174,7 @@ extension ChatController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatMessageCell", for: indexPath) as! ChatMessageCell
-        let chatMessage = textMessagesArray[indexPath.row]
+        let chatMessage = textMessagesArray.sorted(by: {$0.date < $1.date})[indexPath.row]
         cell.chatMessage = chatMessage
         return cell
     }
@@ -179,26 +189,41 @@ extension ChatController: UITextFieldDelegate {
         let messageId = createMessageId() else {
             return
         }
-        
+        let message = ChatMessage(sender: selfSender, messageID: messageId, text: text, isIncoming: false, date: Date())
         if isNewChat {
             // create chat in db
-            let message = ChatMessage(sender: selfSender, messageID: messageId, text: text, isIncoming: false, date: Date())
-            DataBaseManager.shared.createNewChat(with: otherUserUid, name: self.title ?? "User", firstMessage: message) { success in
+            guard let name = self.title else {
+                return
+            }
+            DataBaseManager.shared.createNewChat(with: otherUserUid, name: name, firstMessage: message) { [weak self] success in
                 if success {
                     print("message send")
+                    self?.isNewChat = false
                 } else {
                     print("failed to send")
                 }
             }
         } else {
+            guard let chatUid = chatUid, let name = self.title else {
+                return
+            }
             // append chat data
+            DataBaseManager.shared.sendMessage(to: chatUid, name: name, message: message) {[weak self] success in
+                if success {
+                    self?.sendTextFiend.text?.removeAll()
+                    self?.listenForMessage(id: chatUid)
+                    print("message send")
+                } else {
+                    print("failed to send")
+                }
+            }
         }
         
        
     }
     
     private func createMessageId() -> String? {
-        let newId = "\(otherUserUid)_\(selfSender!.senderId)"
+        let newId = "\(otherUserUid)_\(selfSender!.senderId)_\(Date())"
         
         return newId
     }
