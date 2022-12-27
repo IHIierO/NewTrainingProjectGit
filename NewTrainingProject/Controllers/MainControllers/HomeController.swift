@@ -35,14 +35,14 @@ class HomeController: UIViewController{
 }
 
 // MARK: - SwiftUI
-import SwiftUI
-struct MainController_Previews: PreviewProvider {
-    static var previews: some View {
-        UIViewControllerPreview {
-            // Return whatever controller you want to preview
-            let viewController = UINavigationController(rootViewController:  HomeController())
-            return viewController
-        }.edgesIgnoringSafeArea(.all)
-            
-    }
-}
+//import SwiftUI
+//struct MainController_Previews: PreviewProvider {
+//    static var previews: some View {
+//        UIViewControllerPreview {
+//            // Return whatever controller you want to preview
+//            let viewController = UINavigationController(rootViewController:  HomeController())
+//            return viewController
+//        }.edgesIgnoringSafeArea(.all)
+//            
+//    }
+//}

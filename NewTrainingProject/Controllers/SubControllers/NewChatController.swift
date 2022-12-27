@@ -144,14 +144,14 @@ extension NewChatController: UISearchBarDelegate{
 
 
 // MARK: - SwiftUI
-import SwiftUI
-struct NewChatController_Previews: PreviewProvider {
-    static var previews: some View {
-        UIViewControllerPreview {
-            // Return whatever controller you want to preview
-            let viewController = UINavigationController(rootViewController: NewChatController())
-            return viewController
-        }.edgesIgnoringSafeArea(.all)
-            
-    }
-}
+//import SwiftUI
+//struct NewChatController_Previews: PreviewProvider {
+//    static var previews: some View {
+//        UIViewControllerPreview {
+//            // Return whatever controller you want to preview
+//            let viewController = UINavigationController(rootViewController: NewChatController())
+//            return viewController
+//        }.edgesIgnoringSafeArea(.all)
+//            
+//    }
+//}

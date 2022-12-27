@@ -150,13 +150,13 @@ extension MenuView: UITableViewDelegate, UITableViewDataSource {
 }
 
 // MARK: - SwiftUI
-import SwiftUI
-struct MenuView_Previews: PreviewProvider {
-    static var previews: some View {
-        ViewPreview{
-            let view = MenuView(with: SideMenuItem.allCases)
-            return view
-        }.ignoresSafeArea(.all)
-    }
-}
+//import SwiftUI
+//struct MenuView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ViewPreview{
+//            let view = MenuView(with: SideMenuItem.allCases)
+//            return view
+//        }.ignoresSafeArea(.all)
+//    }
+//}
 

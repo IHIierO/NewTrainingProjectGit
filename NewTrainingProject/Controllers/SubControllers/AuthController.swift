@@ -120,15 +120,15 @@ extension AuthController: UITextFieldDelegate {
 }
 
 // MARK: - SwiftUI
-import SwiftUI
-struct AuthController_Previews: PreviewProvider {
-    static var previews: some View {
-        UIViewControllerPreview {
-            // Return whatever controller you want to preview
-            let viewController = AuthController()
-            return viewController
-        }.edgesIgnoringSafeArea(.all)
-            
-    }
-}
+//import SwiftUI
+//struct AuthController_Previews: PreviewProvider {
+//    static var previews: some View {
+//        UIViewControllerPreview {
+//            // Return whatever controller you want to preview
+//            let viewController = AuthController()
+//            return viewController
+//        }.edgesIgnoringSafeArea(.all)
+//            
+//    }
+//}
 

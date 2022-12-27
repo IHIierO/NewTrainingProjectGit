@@ -96,13 +96,13 @@ extension ContainerController: MenuViewDelegate {
 }
 
 // MARK: - SwiftUI
-import SwiftUI
-struct ContainerController_Previews: PreviewProvider {
-    static var previews: some View {
-        UIViewControllerPreview {
-            // Return whatever controller you want to preview
-            let viewController = ContainerController()
-            return viewController
-        }.edgesIgnoringSafeArea(.all)
-    }
-}
+//import SwiftUI
+//struct ContainerController_Previews: PreviewProvider {
+//    static var previews: some View {
+//        UIViewControllerPreview {
+//            // Return whatever controller you want to preview
+//            let viewController = ContainerController()
+//            return viewController
+//        }.edgesIgnoringSafeArea(.all)
+//    }
+//}

@@ -208,7 +208,7 @@ extension ChatController: UITextFieldDelegate {
                 return
             }
             // append chat data
-            DataBaseManager.shared.sendMessage(to: chatUid, name: name, message: message) {[weak self] success in
+            DataBaseManager.shared.sendMessage(to: chatUid, otherUserUid: otherUserUid, name: name, message: message) {[weak self] success in
                 if success {
                     self?.sendTextFiend.text?.removeAll()
                     self?.listenForMessage(id: chatUid)
@@ -241,14 +241,14 @@ extension ChatController: UITextFieldDelegate {
 }
 
 // MARK: - SwiftUI
-import SwiftUI
-struct ChatBotController_Previews: PreviewProvider {
-    static var previews: some View {
-        UIViewControllerPreview {
-            // Return whatever controller you want to preview
-            let viewController = UINavigationController(rootViewController: ChatController(with: "", id: ""))
-            return viewController
-        }.edgesIgnoringSafeArea(.all)
-            
-    }
-}
+//import SwiftUI
+//struct ChatBotController_Previews: PreviewProvider {
+//    static var previews: some View {
+//        UIViewControllerPreview {
+//            // Return whatever controller you want to preview
+//            let viewController = UINavigationController(rootViewController: ChatController(with: "", id: ""))
+//            return viewController
+//        }.edgesIgnoringSafeArea(.all)
+//            
+//    }
+//}

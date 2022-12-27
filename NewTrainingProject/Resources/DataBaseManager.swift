@@ -225,7 +225,7 @@ extension DataBaseManager {
         }
     }
     /// Send message with target chat and message
-    public func sendMessage(to chat: String, name: String, message: ChatMessage, completion: @escaping (Bool) -> Void){
+    public func sendMessage(to chat: String, otherUserUid: String, name: String, message: ChatMessage, completion: @escaping (Bool) -> Void){
         
         let user = Auth.auth().currentUser
         
@@ -244,11 +244,16 @@ extension DataBaseManager {
                     "name": name
                 ]
                 
-                reference.document("\(chat)").collection("messages").document("\(message.messageID)").setData(collectionMessage) { error in
+                reference.document("\(chat)").collection("messages").document("\(message.messageID)").setData(collectionMessage) { [weak self] error in
                     guard error == nil else {
                         completion(false)
                         return
                     }
+                    
+                    self?.dataBase.collection("user").document("\(user.uid)").collection("userChats").getDocuments { snapshot, error in
+                        
+                    }
+                    
                     completion(true)
                 }
             }

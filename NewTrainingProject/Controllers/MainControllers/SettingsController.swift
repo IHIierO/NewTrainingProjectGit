@@ -63,14 +63,14 @@ class SettingsController: UIViewController {
 }
 
 // MARK: - SwiftUI
-import SwiftUI
-struct SettingsController_Previews: PreviewProvider {
-    static var previews: some View {
-        UIViewControllerPreview {
-            // Return whatever controller you want to preview
-            let viewController = UINavigationController(rootViewController: SettingsController())
-            return viewController
-        }.edgesIgnoringSafeArea(.all)
-            
-    }
-}
+//import SwiftUI
+//struct SettingsController_Previews: PreviewProvider {
+//    static var previews: some View {
+//        UIViewControllerPreview {
+//            // Return whatever controller you want to preview
+//            let viewController = UINavigationController(rootViewController: SettingsController())
+//            return viewController
+//        }.edgesIgnoringSafeArea(.all)
+//            
+//    }
+//}

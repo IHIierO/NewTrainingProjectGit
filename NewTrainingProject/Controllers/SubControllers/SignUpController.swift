@@ -207,15 +207,15 @@ extension SignUpController: UIImagePickerControllerDelegate, PHPickerViewControl
 
 
 // MARK: - SwiftUI
-import SwiftUI
-struct SignUpController_Previews: PreviewProvider {
-    static var previews: some View {
-        UIViewControllerPreview {
-            // Return whatever controller you want to preview
-            let viewController = SignUpController()
-            return viewController
-        }.edgesIgnoringSafeArea(.all)
-            
-    }
-}
+//import SwiftUI
+//struct SignUpController_Previews: PreviewProvider {
+//    static var previews: some View {
+//        UIViewControllerPreview {
+//            // Return whatever controller you want to preview
+//            let viewController = SignUpController()
+//            return viewController
+//        }.edgesIgnoringSafeArea(.all)
+//            
+//    }
+//}
 
