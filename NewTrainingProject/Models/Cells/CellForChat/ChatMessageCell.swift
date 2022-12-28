@@ -44,7 +44,6 @@ class ChatMessageCell: UITableViewCell {
         NSLayoutConstraint.activate([
             messageLabel.topAnchor.constraint(equalTo: topAnchor, constant: padding),
             messageLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding),
-            messageLabel.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.7),
             
             chatBackgroundView.topAnchor.constraint(equalTo: messageLabel.topAnchor, constant: -padding/2),
             chatBackgroundView.leadingAnchor.constraint(equalTo: messageLabel.leadingAnchor, constant: -padding/2),

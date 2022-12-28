@@ -162,15 +162,17 @@ extension DataBaseManager {
             }
         }
     }
-    
     /// Fetches and return all chats for user
     public func getAllChats(for userUid: String, completion: @escaping (Result<[Chats], Error>) -> Void){
         
-        dataBase.collection("users").document("\(userUid)").collection("userChats").getDocuments { snapshot, error in
-            
-            let document = snapshot!.documents
-            let chats: [Chats] = document.compactMap { dictionary in
-                
+        dataBase.collection("users").document("\(userUid)").collection("userChats").addSnapshotListener { snapshot, error in
+
+            guard let documents = snapshot?.documents else {
+                print("Error fetching documents: \(error!)")
+                return
+            }
+            let chats: [Chats] = documents.compactMap { dictionary in
+
                 guard let chatId = dictionary["id"] as? String,
                       let name = dictionary["name"] as? String,
                       let otherUserUid = dictionary["otherUserUid"] as? String,
@@ -181,25 +183,28 @@ extension DataBaseManager {
                     let latestMessageObject = LatestMessage(date: "error", text: "error", isREad: false)
                     return Chats(id: "error", name: "error", otherUserId: "error", latestMessage: latestMessageObject)
                 }
-                
+
                 let dateString = CustomDate.dateStringFromFirestone(stamp: date)
                 let latestMessageObject = LatestMessage(date: dateString, text: message, isREad: isRead)
                 return Chats(id: chatId, name: name, otherUserId: otherUserUid, latestMessage: latestMessageObject)
-                
+
             }
             completion(.success(chats))
-        } 
+        }
     }
     /// Get all messages for a given chat
     public func getAllMessagesForChat(with id: String, forSender: Sender, completion: @escaping (Result<[ChatMessage],Error>) -> Void){
         
         
-        dataBase.collection("chats").document("\(id)").collection("messages").getDocuments { snapshot, error in
-            
-            let document = snapshot!.documents
-            
-            let messages: [ChatMessage] = document.compactMap { dictionary in
-                
+        dataBase.collection("chats").document("\(id)").collection("messages").addSnapshotListener { snapshot, error in
+
+            guard let documents = snapshot?.documents else {
+                print("Error fetching documents: \(error!)")
+                return
+            }
+
+            let messages: [ChatMessage] = documents.compactMap { dictionary in
+
                 guard let name = dictionary["name"] as? String,
                 let isRead = dictionary["is_read"] as? Bool,
                 let messageId = dictionary["id"] as? String,
@@ -211,17 +216,18 @@ extension DataBaseManager {
                     let sender = Sender(photoURL: "", senderId: "", displayName: "")
                     return ChatMessage(sender: sender, messageID: "error", text: "error", isIncoming: false, date: Date())
                 }
-                
+
                 let sender = Sender(photoURL: "", senderId: senderUid, displayName: name)
-                
+
                 if senderUid == forSender.senderId {
                     return ChatMessage(sender: sender, messageID: messageId, text: content, isIncoming: isRead, date: date.dateValue())
                 } else {
                     return ChatMessage(sender: sender, messageID: messageId, text: content, isIncoming: true, date: date.dateValue())
                 }
             }
-            completion(.success(messages))
             
+            completion(.success(messages))
+
         }
     }
     /// Send message with target chat and message
@@ -232,7 +238,7 @@ extension DataBaseManager {
         if let user = user {
             
             let reference = dataBase.collection("chats")
-            reference.document("\(chat)").getDocument { snapshot, error in
+           // reference.document("\(chat)").getDocument { snapshot, error in
                 
                 let collectionMessage: [String: Any] = [
                     "id": message.messageID,
@@ -245,18 +251,37 @@ extension DataBaseManager {
                 ]
                 
                 reference.document("\(chat)").collection("messages").document("\(message.messageID)").setData(collectionMessage) { [weak self] error in
+                    guard let strongSelf = self else {
+                        return
+                    }
+                    
                     guard error == nil else {
                         completion(false)
                         return
                     }
                     
-                    self?.dataBase.collection("user").document("\(user.uid)").collection("userChats").getDocuments { snapshot, error in
-                        
-                    }
+                    strongSelf.dataBase.collection("users").document("\(user.uid)").collection("userChats").document("\(chat)").updateData(
+                    [
+                        "latestMessage": [
+                            "date": message.date,
+                            "message": message.text,
+                            "is_read": false
+                        ]
+                    ]
+                    )
+                    strongSelf.dataBase.collection("users").document("\(otherUserUid)").collection("userChats").document("\(chat)").updateData(
+                    [
+                        "latestMessage": [
+                            "date": message.date,
+                            "message": message.text,
+                            "is_read": false
+                        ]
+                    ]
+                    )
                     
                     completion(true)
                 }
-            }
+            //}
         }
     }
 }

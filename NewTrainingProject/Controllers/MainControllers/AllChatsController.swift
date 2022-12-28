@@ -31,8 +31,13 @@ class AllChatsController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupController()
-        startListeningForChats()
+        //startListeningForChats()
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        startListeningForChats()
     }
     
     private func setupController(){

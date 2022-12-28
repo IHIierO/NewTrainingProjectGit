@@ -13,7 +13,7 @@ import FirebaseAuth
 class ChatController: UIViewController {
     
     public var otherUserUid: String
-    private var chatUid: String?
+    public var chatUid: String?
     public var isNewChat = false
     lazy var displayName: String = ""
     
@@ -81,7 +81,8 @@ class ChatController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupController()
-        
+        setConstraints()
+        registerObservers()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -91,12 +92,17 @@ class ChatController: UIViewController {
         } 
     }
     
+    deinit{
+        removeObservers()
+    }
+    
     private func setupController(){
         attemptToAssambleGroupedMessage()
         BackButton(vc: self).createBackButton()
         view.backgroundColor = .systemMint
         view.addSubview(sendTextFiend)
         sendTextFiend.delegate = self
+        sendTextFiend.becomeFirstResponder()
         view.addSubview(sendButton)
         sendButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
         view.addSubview(tableView)
@@ -106,7 +112,9 @@ class ChatController: UIViewController {
         tableView.dataSource = self
         tableView.register(ChatMessageCell.self, forCellReuseIdentifier: "ChatMessageCell")
         tableView.separatorStyle = .none
-        
+    }
+    
+    private func setConstraints(){
         NSLayoutConstraint.activate([
             sendTextFiend.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             sendTextFiend.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
@@ -123,12 +131,46 @@ class ChatController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: sendTextFiend.topAnchor)
         ])
-        
-        
+    }
+    private func registerObservers(){
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    private func removeObservers(){
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    @objc func keyboardWillShow(_ notification: Notification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            
+            UIView.animate(withDuration: 0, delay: 0) { [weak self] in
+                let keyboardHeight = keyboardFrame.cgRectValue.height
+                let offsetHeight = keyboardHeight + (self?.sendTextFiend.frame.size.height)!
+                self?.tableView.contentOffset = CGPoint(x: 0, y: offsetHeight)
+                if !(self?.textMessagesArray.isEmpty)! {
+                    let indexPath = IndexPath(row: (self?.textMessagesArray.count)! - 1, section: 0)
+                    self?.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                }
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide(){
+        UIView.animate(withDuration: 0, delay: 0) { [weak self] in
+            self?.tableView.setContentOffset(CGPoint.zero, animated: false)
+            if !(self?.textMessagesArray.isEmpty)! {
+                let indexPath = IndexPath(row: (self?.textMessagesArray.count)! - 1, section: 0)
+                self?.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            }
+        }
+    }
+   
     private func listenForMessage(id: String){
         DataBaseManager.shared.getAllMessagesForChat(with: id, forSender: self.selfSender!) {[weak self] result in
+            guard let strongSelf = self else {
+                return
+            }
             switch result {
             case .success(let messages):
                 guard !messages.isEmpty else {
@@ -138,6 +180,8 @@ class ChatController: UIViewController {
                 
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
+                    let indexPath = IndexPath(row: strongSelf.textMessagesArray.count - 1, section: 0)
+                    self?.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
                 }
                 
             case .failure(let error):
@@ -171,7 +215,6 @@ extension ChatController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return textMessagesArray.count
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatMessageCell", for: indexPath) as! ChatMessageCell
         let chatMessage = textMessagesArray.sorted(by: {$0.date < $1.date})[indexPath.row]
@@ -218,8 +261,6 @@ extension ChatController: UITextFieldDelegate {
                 }
             }
         }
-        
-       
     }
     
     private func createMessageId() -> String? {
@@ -227,16 +268,9 @@ extension ChatController: UITextFieldDelegate {
         
         return newId
     }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-//        let sectionIndex = textMessagesArray.endIndex
-//        let rowIndex = textMessagesArray[sectionIndex-1].endIndex
-//        tableView.scrollToRow(at: [sectionIndex-1,rowIndex-1], at: .bottom, animated: true)
-    }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         return view.endEditing(true)
-       
         }
 }
 
