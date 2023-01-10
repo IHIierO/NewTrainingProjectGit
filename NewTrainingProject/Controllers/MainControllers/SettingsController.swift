@@ -12,8 +12,6 @@ import FirebaseAuth
 
 class SettingsController: UIViewController {
     
-    
-    
     var signOutButton: UIButton = {
         let button = UIButton()
         button.configuration = .gray()
@@ -22,7 +20,6 @@ class SettingsController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,9 +31,7 @@ class SettingsController: UIViewController {
         view.backgroundColor = .systemCyan
         title = "Settings"
         view.addSubview(signOutButton)
-        
         signOutButton.addTarget(self, action: #selector(signOutButtonAction), for: .touchUpInside)
-        
     }
     
     private func setConstraints(){
@@ -50,15 +45,15 @@ class SettingsController: UIViewController {
     
     @objc func signOutButtonAction(){
         let firebaseAuth = Auth.auth()
-     do {
-       try firebaseAuth.signOut()
-         let authController = UINavigationController(rootViewController: AuthController()) 
-         authController.modalTransitionStyle = .crossDissolve
-         authController.modalPresentationStyle = .fullScreen
-         present(authController, animated: true)
-     } catch let signOutError as NSError {
-       print("Error signing out: %@", signOutError)
-     }
+        do {
+            try firebaseAuth.signOut()
+            let authController = UINavigationController(rootViewController: AuthController())
+            authController.modalTransitionStyle = .crossDissolve
+            authController.modalPresentationStyle = .fullScreen
+            present(authController, animated: true)
+        } catch let signOutError as NSError {
+            print("Error signing out: %@", signOutError)
+        }
     }
 }
 
