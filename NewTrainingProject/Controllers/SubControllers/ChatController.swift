@@ -41,19 +41,19 @@ class ChatController: UIViewController {
     
     
     var textMessagesArray = [ChatMessage]()
-//    var messageFromServer = [
-//
-//    ]
+    var messageFromServer = [[ChatMessage]]()
     private func attemptToAssambleGroupedMessage(){
-//        let groupedMessage = Dictionary(grouping: messageFromServer) { message -> Date in
-//            return message.date
-//        }
-//
-//        let sortedKeys = groupedMessage.keys.sorted()
-//        sortedKeys.forEach { (key) in
-//            let values = groupedMessage[key]
-//            textMessagesArray.append(values ?? [])
-//        }
+        let groupedMessage = Dictionary(grouping: textMessagesArray) { message -> Date in
+            let string = CustomDate.dateString(date: message.date)
+            let date = CustomDate.dateFromCustomString(string: string)
+            return date
+        }
+
+        let sortedKeys = groupedMessage.keys.sorted()
+        sortedKeys.forEach { (key) in
+            let values = groupedMessage[key]
+            messageFromServer.append(values ?? [])
+        }
     }
     
     private let tableView = UITableView()
@@ -97,7 +97,7 @@ class ChatController: UIViewController {
     }
     
     private func setupController(){
-        attemptToAssambleGroupedMessage()
+        
         BackButton(vc: self).createBackButton()
         view.backgroundColor = .systemMint
         view.addSubview(sendTextFiend)
@@ -148,9 +148,11 @@ class ChatController: UIViewController {
                 let keyboardHeight = keyboardFrame.cgRectValue.height
                 let offsetHeight = keyboardHeight + (self?.sendTextFiend.frame.size.height)!
                 self?.tableView.contentOffset = CGPoint(x: 0, y: offsetHeight)
-                if !(self?.textMessagesArray.isEmpty)! {
-                    let indexPath = IndexPath(row: (self?.textMessagesArray.count)! - 1, section: 0)
-                    self?.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                if !(self?.messageFromServer.isEmpty)! {
+                    let section = (self?.messageFromServer.count ?? 1) - 1
+                    let row = (self?.messageFromServer[section].count ?? 1) - 1
+                    let indexPath = IndexPath(row: row, section: section)
+                    self?.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
                 }
             }
         }
@@ -159,13 +161,16 @@ class ChatController: UIViewController {
     @objc func keyboardWillHide(){
         UIView.animate(withDuration: 0, delay: 0) { [weak self] in
             self?.tableView.setContentOffset(CGPoint.zero, animated: false)
-            if !(self?.textMessagesArray.isEmpty)! {
-                let indexPath = IndexPath(row: (self?.textMessagesArray.count)! - 1, section: 0)
-                self?.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            if !(self?.messageFromServer.isEmpty)! {
+                let section = (self?.messageFromServer.count ?? 1) - 1
+                let row = (self?.messageFromServer[section].count ?? 1) - 1
+                let indexPath = IndexPath(row: row, section: section)
+                self?.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
             }
         }
     }
    
+    //MARK: - listenForMessage
     private func listenForMessage(id: String){
         DataBaseManager.shared.getAllMessagesForChat(with: id, forSender: self.selfSender!) {[weak self] result in
             guard let strongSelf = self else {
@@ -177,13 +182,15 @@ class ChatController: UIViewController {
                     return
                 }
                 self?.textMessagesArray = messages
-                
+                self?.messageFromServer.removeAll()
+                self?.attemptToAssambleGroupedMessage()
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
-                    let indexPath = IndexPath(row: strongSelf.textMessagesArray.count - 1, section: 0)
+                    let section = strongSelf.messageFromServer.count - 1
+                    let row = strongSelf.messageFromServer[section].count - 1
+                    let indexPath = IndexPath(row: row, section: section)
                     self?.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
                 }
-                
             case .failure(let error):
                 print("Failed to get messages: \(error)")
             }
@@ -191,11 +198,15 @@ class ChatController: UIViewController {
     }
      
 }
-
+//MARK: - UITableViewDelegate, UITableViewDataSource
 extension ChatController: UITableViewDelegate, UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return messageFromServer.count
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if let firstMessageInSection = textMessagesArray.first {
+        if let firstMessageInSection = messageFromServer[section].first {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd.MM.yyyy"
             let dateString = dateFormatter.string(from: firstMessageInSection.date)
@@ -213,20 +224,20 @@ extension ChatController: UITableViewDelegate, UITableViewDataSource {
         return nil
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return textMessagesArray.count
+        return messageFromServer[section].count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatMessageCell", for: indexPath) as! ChatMessageCell
-        let chatMessage = textMessagesArray.sorted(by: {$0.date < $1.date})[indexPath.row]
+        let chatMessage = messageFromServer[indexPath.section].sorted(by: {$0.date < $1.date})[indexPath.row]
         cell.chatMessage = chatMessage
         return cell
     }
 }
-
+//MARK: - sendButtonTapped
 extension ChatController: UITextFieldDelegate {
     
     @objc func sendButtonTapped(){
-        let text = self.sendTextFiend.text!
+        let text = sendTextFiend.text!
         guard !text.replacingOccurrences(of: " ", with: "").isEmpty,
         let selfSender = self.selfSender,
         let messageId = createMessageId() else {
@@ -235,19 +246,23 @@ extension ChatController: UITextFieldDelegate {
         let message = ChatMessage(sender: selfSender, messageID: messageId, text: text, isIncoming: false, date: Date())
         if isNewChat {
             // create chat in db
-            guard let name = self.title else {
+            guard let name = title else {
                 return
             }
             DataBaseManager.shared.createNewChat(with: otherUserUid, name: name, firstMessage: message) { [weak self] success in
                 if success {
                     print("message send")
                     self?.isNewChat = false
+                    self?.sendTextFiend.text?.removeAll()
+                    let newChatId = "chat_\(message.messageID)"
+                    self?.chatUid = newChatId
+                    self?.listenForMessage(id: newChatId)
                 } else {
                     print("failed to send")
                 }
             }
         } else {
-            guard let chatUid = chatUid, let name = self.title else {
+            guard let chatUid = chatUid, let name = title else {
                 return
             }
             // append chat data
@@ -255,6 +270,7 @@ extension ChatController: UITextFieldDelegate {
                 if success {
                     self?.sendTextFiend.text?.removeAll()
                     self?.listenForMessage(id: chatUid)
+                    
                     print("message send")
                 } else {
                     print("failed to send")
@@ -268,7 +284,7 @@ extension ChatController: UITextFieldDelegate {
         
         return newId
     }
-
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         return view.endEditing(true)
         }

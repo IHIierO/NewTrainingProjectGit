@@ -28,7 +28,7 @@ public extension UIView {
 }
 
 protocol MenuViewDelegate {
-    func didSelectMenuIdem(named: SideMenuItem)
+    func didSelectMenuItem(named: SideMenuItem)
 }
 
 extension UIViewController {

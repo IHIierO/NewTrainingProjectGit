@@ -55,7 +55,7 @@ class SettingsController: UIViewController {
          let authController = UINavigationController(rootViewController: AuthController()) 
          authController.modalTransitionStyle = .crossDissolve
          authController.modalPresentationStyle = .fullScreen
-         self.present(authController, animated: true)
+         present(authController, animated: true)
      } catch let signOutError as NSError {
        print("Error signing out: %@", signOutError)
      }

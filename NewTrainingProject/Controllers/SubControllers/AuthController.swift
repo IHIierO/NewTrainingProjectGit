@@ -86,7 +86,7 @@ class AuthController: UIViewController {
     
     @objc func goToSignUpController(){
         let signUpController = SignUpController()
-        self.navigationController?.pushViewController(signUpController, animated: true)
+        navigationController?.pushViewController(signUpController, animated: true)
     }
     
     @objc func authenticate(){
@@ -95,16 +95,16 @@ class AuthController: UIViewController {
         if error != nil {
             errorLabel.alpha = 1
         }else{
-            Auth.auth().signIn(withEmail: emailTextField.text!.lowercased(), password: passwordTextField.text!) { result, error in
+            Auth.auth().signIn(withEmail: emailTextField.text!.lowercased(), password: passwordTextField.text!) { [weak self] result, error in
                 if error != nil {
-                    self.errorLabel.alpha = 1
+                    self?.errorLabel.alpha = 1
                 }else{
                     if Auth.auth().currentUser != nil {
                         
                         let containerController = ContainerController()
                         containerController.modalTransitionStyle = .crossDissolve
                         containerController.modalPresentationStyle = .fullScreen
-                        self.present(containerController, animated: true)
+                        self?.present(containerController, animated: true)
                     }
                 }
             }
@@ -114,7 +114,7 @@ class AuthController: UIViewController {
 
 extension AuthController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
+        view.endEditing(true)
         return false
     }
 }

@@ -21,9 +21,9 @@ enum SideMenuItem: String, CaseIterable {
 class MenuView: UIView {
     public var delegate: MenuViewDelegate?
     private let menuName: [SideMenuItem]
-    lazy var width: CGFloat = self.frame.width * 0.2
+    lazy var width: CGFloat = frame.width * 0.2
     lazy var userAvatar: UIImageView = {
-        let userAvatar = UIImageView(frame: .init(x: 0, y: 0, width: self.width, height: self.width))
+        let userAvatar = UIImageView(frame: .init(x: 0, y: 0, width: width, height: width))
         userAvatar.layer.cornerRadius = userAvatar.frame.width / 2
         userAvatar.contentMode = .scaleAspectFill
         userAvatar.layer.masksToBounds = true
@@ -49,10 +49,10 @@ class MenuView: UIView {
     }
     
     private func setupMenuView(){
-        self.backgroundColor = .lightGray
-        self.frame = UIScreen.main.bounds
+        backgroundColor = .lightGray
+        frame = UIScreen.main.bounds
         [userAvatar, userName, tableView].forEach {
-            self.addSubview($0)
+            addSubview($0)
         }
         fetchProfileData()
         tableView.delegate = self
@@ -65,23 +65,23 @@ class MenuView: UIView {
     
     private func setConstraints(){
         NSLayoutConstraint.activate([
-            userAvatar.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
-            userAvatar.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
-            userAvatar.widthAnchor.constraint(equalToConstant: self.width),
-            userAvatar.heightAnchor.constraint(equalToConstant: self.width),
+            userAvatar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
+            userAvatar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            userAvatar.widthAnchor.constraint(equalToConstant: width),
+            userAvatar.heightAnchor.constraint(equalToConstant: width),
             
             userName.topAnchor.constraint(equalTo: userAvatar.topAnchor),
             userName.leadingAnchor.constraint(equalTo: userAvatar.trailingAnchor, constant: 10),
-            userName.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
-            userName.heightAnchor.constraint(equalToConstant: self.width),
+            userName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            userName.heightAnchor.constraint(equalToConstant: width),
             
             tableView.topAnchor.constraint(equalTo: userName.bottomAnchor, constant: 10),
-            tableView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
         ])
     }
-    
+    #warning("Изображение подгружается только после перезахода")
     private func fetchProfileData(){
         let activituIndicator = DefaultActivityIndicator(indicatorStyle: .medium)
         activituIndicator.show(view: userAvatar)
@@ -103,9 +103,10 @@ class MenuView: UIView {
             let path = "images/" + fileName
             
             StorageManager.shared.downloadURL(for: path) { [weak self] results in
+                guard let strongSelf = self else {return}
                 switch results {
                 case .success(let url):
-                    self?.downloadImage(imageView: self!.userAvatar, url: url)
+                    self?.downloadImage(imageView: strongSelf.userAvatar, url: url)
                     activituIndicator.remove()
                 case .failure(let error):
                     print("Failed to get download URL: \(error)")
@@ -145,7 +146,7 @@ extension MenuView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let didSelectMenu = menuName[indexPath.row]
-        delegate?.didSelectMenuIdem(named: didSelectMenu)
+        delegate?.didSelectMenuItem(named: didSelectMenu)
     }
 }
 

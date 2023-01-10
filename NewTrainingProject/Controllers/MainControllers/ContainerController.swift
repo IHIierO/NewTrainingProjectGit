@@ -14,7 +14,7 @@ class ContainerController: UIViewController {
     private var openSideMenuGesture: UISwipeGestureRecognizer?
     private var closeSideMenuGesture: UISwipeGestureRecognizer?
     
-    lazy var sideInMenuPadding: CGFloat = self.view.frame.width * 0.3
+    lazy var sideInMenuPadding: CGFloat = view.frame.width * 0.3
     var isSideMenuPresented = false
     lazy var menuView = MenuView(with: SideMenuItem.allCases)
     
@@ -43,7 +43,7 @@ class ContainerController: UIViewController {
         homeController.delegate = self
         view.addSubview(navigationHomeController.view)
         navigationHomeController.didMove(toParent: self)
-        self.navController = navigationHomeController
+        navController = navigationHomeController
     }
     
     @objc func openSideMenuGestureSwipe(gesture: UISwipeGestureRecognizer){
@@ -80,7 +80,7 @@ extension ContainerController: HomeControllerDelegate {
 }
 //MARK: - MenuViewDelegate
 extension ContainerController: MenuViewDelegate {
-    func didSelectMenuIdem(named: SideMenuItem) {
+    func didSelectMenuItem(named: SideMenuItem) {
         toggleMenu { [self] in
             switch named {
             case .home:

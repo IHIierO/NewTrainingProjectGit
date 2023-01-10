@@ -116,13 +116,14 @@ class SignUpController: UIViewController {
             errorLabel.alpha = 1
             errorLabel.text = error
         } else {
-            Auth.auth().createUser(withEmail: emailTextField.text!.lowercased(), password: passwordTextField.text!) { result, error in
+            Auth.auth().createUser(withEmail: emailTextField.text!.lowercased(), password: passwordTextField.text!) { [weak self] result, error in
+                guard let strongSelf = self else {return}
                 if error != nil {
-                    self.errorLabel.text = "\(error?.localizedDescription)"
+                    strongSelf.errorLabel.text = "\(error?.localizedDescription ?? "Some error")"
                 } else {
-                    DataBaseManager.shared.saveNewUser(users: ChatUsers(firstName: self.firstNameTextField.text!, lastName: self.lastNameTextField.text!, email: self.emailTextField.text!, uid: (result?.user.uid)!), errorLabel: self.errorLabel)
+                    DataBaseManager.shared.saveNewUser(users: ChatUsers(firstName: strongSelf.firstNameTextField.text!, lastName: strongSelf.lastNameTextField.text!, email: strongSelf.emailTextField.text!, uid: (result?.user.uid)!), errorLabel: strongSelf.errorLabel)
                     
-                    guard let image = self.profileImage.image, let data = image.pngData() else {
+                    guard let image = strongSelf.profileImage.image, let data = image.pngData() else {
                         return
                     }
                     let fileName = "\(result!.user.uid)_profile_image.png"
@@ -135,13 +136,11 @@ class SignUpController: UIViewController {
                             print("Storage manager error: \(error)")
                         }
                     }
-                    
                     if Auth.auth().currentUser != nil {
-                        
                         let containerController = ContainerController()
                         containerController.modalTransitionStyle = .crossDissolve
                         containerController.modalPresentationStyle = .fullScreen
-                        self.present(containerController, animated: true)
+                        strongSelf.present(containerController, animated: true)
                     }
                 }
             }
@@ -184,7 +183,7 @@ extension SignUpController: UIImagePickerControllerDelegate, PHPickerViewControl
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
         guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {return}
-        self.profileImage.image = image
+        profileImage.image = image
     }
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {

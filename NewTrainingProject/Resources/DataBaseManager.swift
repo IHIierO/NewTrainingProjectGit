@@ -80,7 +80,7 @@ extension DataBaseManager {
             
             let reference = dataBase.collection("users")
             reference.document("\(user.uid)").getDocument { snapshot, error in
-                guard var document = snapshot?.data() as? [String: Any] else {
+                guard snapshot?.data() is [String: Any] else {
                     completion(false)
                     print("user not found")
                     return
@@ -131,7 +131,6 @@ extension DataBaseManager {
     }
     
     public func finishCreatingChat(chatId: String, name: String, firstMessage: ChatMessage, completion: @escaping (Bool) -> Void){
-#warning("сохраняется только одно сообщение")
         let user = Auth.auth().currentUser
         
         if let user = user {
@@ -145,14 +144,7 @@ extension DataBaseManager {
                 "is_read": false,
                 "name": name
             ]
-            
-//            let document: [String: Any] = [
-//                "message": [
-//                    collectionMessage
-//                ]
-//            ]
-//
-            
+
             dataBase.collection("chats").document("\(chatId)").collection("messages").document("\(firstMessage.messageID)").setData(collectionMessage) { error in
                 guard error == nil else {
                     completion(false)
@@ -199,7 +191,7 @@ extension DataBaseManager {
         dataBase.collection("chats").document("\(id)").collection("messages").addSnapshotListener { snapshot, error in
 
             guard let documents = snapshot?.documents else {
-                print("Error fetching documents: \(error!)")
+                print("Error fetching documents: \(DatabaseError.filedToFetch)")
                 return
             }
 
@@ -224,6 +216,7 @@ extension DataBaseManager {
                 } else {
                     return ChatMessage(sender: sender, messageID: messageId, text: content, isIncoming: true, date: date.dateValue())
                 }
+                
             }
             
             completion(.success(messages))
@@ -236,54 +229,151 @@ extension DataBaseManager {
         let user = Auth.auth().currentUser
         
         if let user = user {
-            
-            let reference = dataBase.collection("chats")
-           // reference.document("\(chat)").getDocument { snapshot, error in
-                
-                let collectionMessage: [String: Any] = [
-                    "id": message.messageID,
-                    "type": "text",
-                    "content": message.text,
-                    "date": message.date,
-                    "sender_uid": user.uid as Any,
-                    "is_read": false,
-                    "name": name
-                ]
-                
-                reference.document("\(chat)").collection("messages").document("\(message.messageID)").setData(collectionMessage) { [weak self] error in
-                    guard let strongSelf = self else {
-                        return
-                    }
-                    
-                    guard error == nil else {
-                        completion(false)
-                        return
-                    }
-                    
-                    strongSelf.dataBase.collection("users").document("\(user.uid)").collection("userChats").document("\(chat)").updateData(
-                    [
-                        "latestMessage": [
-                            "date": message.date,
-                            "message": message.text,
-                            "is_read": false
-                        ]
-                    ]
-                    )
-                    strongSelf.dataBase.collection("users").document("\(otherUserUid)").collection("userChats").document("\(chat)").updateData(
-                    [
-                        "latestMessage": [
-                            "date": message.date,
-                            "message": message.text,
-                            "is_read": false
-                        ]
-                    ]
-                    )
-                    
-                    completion(true)
+            var displayName: String = ""
+            DataBaseManager.shared.getUserName(user: user){result in
+                switch result {
+                case .success(let userName):
+                    displayName = userName
+                case .failure(let error):
+                    print("Failed to get User Name: \(error)")
                 }
-            //}
+            }
+            let reference = dataBase.collection("chats")
+            
+            let collectionMessage: [String: Any] = [
+                "id": message.messageID,
+                "type": "text",
+                "content": message.text,
+                "date": message.date,
+                "sender_uid": user.uid as Any,
+                "is_read": false,
+                "name": name
+            ]
+            
+            reference.document("\(chat)").collection("messages").document("\(message.messageID)").setData(collectionMessage) { [weak self] error in
+                guard let strongSelf = self else {
+                    return
+                }
+                
+                guard error == nil else {
+                    completion(false)
+                    return
+                }
+    /// update last message for current User
+    strongSelf.dataBase.collection("users").document("\(user.uid)").collection("userChats").document("\(chat)").getDocument { snapshot, error in
+        if snapshot?.data() is [String: Any] {
+                        strongSelf.dataBase.collection("users").document("\(user.uid)").collection("userChats").document("\(chat)").updateData(
+                            [
+                                "latestMessage": [
+                                    "date": message.date,
+                                    "message": message.text,
+                                    "is_read": false
+                                ]
+                            ]
+                        )
+                    }else{
+                        let newChatData: [String: Any] = [
+                            "id": chat,
+                            "name": name,
+                            "otherUserUid": otherUserUid,
+                            "latestMessage": [
+                                "date": message.date,
+                                "message": message.text,
+                                "is_read": false
+                            ]
+                        ]
+                        strongSelf.dataBase.collection("users").document("\(user.uid)").collection("userChats").document("\(chat)").setData(newChatData)
+                    }
+                }
+    /// update last message for recipient User
+                strongSelf.dataBase.collection("users").document("\(otherUserUid)").collection("userChats").document("\(chat)").getDocument { snapshot, error in
+                    if snapshot?.data() is [String: Any] {
+                        strongSelf.dataBase.collection("users").document("\(otherUserUid)").collection("userChats").document("\(chat)").updateData(
+                                        [
+                                            "latestMessage": [
+                                                "date": message.date,
+                                                "message": message.text,
+                                                "is_read": false
+                                            ]
+                                        ]
+                                    )
+                    }else{
+                        let recipient_newChatData: [String: Any] = [
+                            "id": chat,
+                            "name": displayName,
+                            "otherUserUid": user.uid,
+                            "latestMessage": [
+                                "date": message.date,
+                                "message": message.text,
+                                "is_read": true as Any
+                            ]
+                        ]
+                        strongSelf.dataBase.collection("users").document("\(otherUserUid)").collection("userChats").document("\(chat)").setData(recipient_newChatData)
+                    }
+                }
+                completion(true)
+            }
+        }
+    }
+    
+    public func chatExist(with targetRecipientUid: String, completion: @escaping (Result<String, Error>) -> Void) {
+        
+        let senderUid = self.safeSenderUid()
+        
+        dataBase.collection("users").document("\(targetRecipientUid)").collection("userChats").getDocuments { snapshot, error in
+            guard let documents = snapshot?.documents else {
+                completion(.failure(DatabaseError.filedToFetch))
+                return
+            }
+            if let chats = documents.first(where: {
+                guard let targetSenderUid = $0["otherUserUid"] as? String else {
+                    return false
+                }
+                return senderUid == targetSenderUid
+            }) {
+                guard let id = chats["id"] as? String else {
+                    completion(.failure(DatabaseError.filedToFetch))
+                    return
+                }
+                completion(.success(id))
+                return
+            }
+            completion(.failure(DatabaseError.filedToFetch))
+            print("Filed to get chats...")
+            return
+        }
+    }
+    
+    public func safeSenderUid() -> String {
+        let user = Auth.auth().currentUser
+        guard let safeSenderUid = user?.uid as? String else {
+            print("User Uid is not a String")
+            return "User Uid is not a String"
+        }
+        return safeSenderUid
+    }
+}
+
+//MARK: - Delite chats and messages
+extension DataBaseManager {
+    public func deleteChat(chatUid: String, complrtion: @escaping (Bool) -> Void) {
+        
+        print("Start deleting chat with Uid: \(chatUid)")
+        guard let user = Auth.auth().currentUser else {
+            return
+        }
+        dataBase.collection("users").document("\(user.uid)").collection("userChats").document("\(chatUid)").delete() { error in
+            if let error = error {
+                print("Error removing document: \(error)")
+                complrtion(false)
+            } else {
+                print("Document successfully removed!")
+                complrtion(true)
+            }
         }
     }
 }
 
-
+public enum DatabaseError: Error {
+    case filedToFetch
+}

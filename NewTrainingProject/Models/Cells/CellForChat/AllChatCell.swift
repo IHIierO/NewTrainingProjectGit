@@ -11,7 +11,7 @@ class AllChatCell: UITableViewCell {
     
     static let id = "AllChatCell"
     
-    lazy var width: CGFloat = self.frame.width * 0.3
+    lazy var width: CGFloat = frame.width * 0.3
     
     lazy var userAvatar: UIImageView = {
         let userAvatar = UIImageView(frame: CGRect(x: 0, y: 0, width: width, height: width))
@@ -41,28 +41,26 @@ class AllChatCell: UITableViewCell {
         super.layoutSubviews()
         
         NSLayoutConstraint.activate([
-            userAvatar.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            userAvatar.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
-            userAvatar.widthAnchor.constraint(equalToConstant: self.width),
-            userAvatar.heightAnchor.constraint(equalToConstant: self.width),
+            userAvatar.centerYAnchor.constraint(equalTo: centerYAnchor),
+            userAvatar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            userAvatar.widthAnchor.constraint(equalToConstant: width),
+            userAvatar.heightAnchor.constraint(equalToConstant: width),
             
             userNameLabel.topAnchor.constraint(equalTo: userAvatar.topAnchor),
             userNameLabel.leadingAnchor.constraint(equalTo: userAvatar.trailingAnchor, constant: 20),
-            userNameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            userNameLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.2),
+            userNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            userNameLabel.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.2),
             
             userMessageLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor),
             userMessageLabel.leadingAnchor.constraint(equalTo: userAvatar.trailingAnchor, constant: 20),
-            userMessageLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            userMessageLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10)
-            
+            userMessageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            userMessageLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
         ])
-        
     }
     
     public func configure(with model: Chats) {
-        self.userMessageLabel.text = model.latestMessage.text
-        self.userNameLabel.text = model.name
+        userMessageLabel.text = model.latestMessage.text
+        userNameLabel.text = model.name
         let activituIndicator = DefaultActivityIndicator(indicatorStyle: .medium)
         activituIndicator.show(view: userAvatar)
         let path = "images/\(model.otherUserId)_profile_image.png"

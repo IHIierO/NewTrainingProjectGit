@@ -9,11 +9,11 @@ import UIKit
 
 class NewChatController: UIViewController {
     
-    public var completion: (([String: Any]) -> (Void))?
+    public var completion: ((SearchResults) -> (Void))?
     
     private let activityIndicator = DefaultActivityIndicator(indicatorStyle: .large)
     private var users = [[String: Any]]()
-    private var results = [[String: Any]]()
+    private var results = [SearchResults]()
     private var hasFatched = false
     
     private let searchBar: UISearchBar = {
@@ -68,7 +68,7 @@ extension NewChatController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "result user", for: indexPath)
         var content = cell.defaultContentConfiguration()
-        content.text = results[indexPath.row]["name"] as? String
+        content.text = results[indexPath.row].name
         cell.contentConfiguration = content
         return cell
     }
@@ -79,9 +79,7 @@ extension NewChatController: UITableViewDelegate, UITableViewDataSource {
         dismiss(animated: true) { [weak self] in
             self?.completion?(targetUserData)
         }
-        
     }
-    
 }
 
 extension NewChatController: UISearchBarDelegate{
@@ -116,14 +114,25 @@ extension NewChatController: UISearchBarDelegate{
         guard hasFatched else {
             return
         }
+        let curentUserUid = DataBaseManager.shared.safeSenderUid()
         
-        self.activityIndicator.remove()
+        activityIndicator.remove()
         
-        let results: [[String: Any]] = self.users.filter({
+        let results: [SearchResults] = users.filter({
+            guard let uid = $0["uid"], uid as! String != curentUserUid else {
+                return false
+            }
+            
             guard let name = $0["name"] as? String else {
                 return false
             }
             return name.hasPrefix(term)
+        }).compactMap({
+            
+            guard let uid = $0["uid"] as? String, let name = $0["name"] as? String else {
+                return SearchResults(name: "", uid: "")
+            }
+            return SearchResults(name: name, uid: uid)
         })
         self.results = results
         updateUI()
@@ -131,15 +140,19 @@ extension NewChatController: UISearchBarDelegate{
     
     func updateUI() {
         if results.isEmpty {
-            self.noResultLabel.isHidden = false
-            self.tableView.isHidden = true
+            noResultLabel.isHidden = false
+            tableView.isHidden = true
         } else {
-            self.noResultLabel.isHidden = true
-            self.tableView.isHidden = false
-            self.tableView.reloadData()
+            noResultLabel.isHidden = true
+            tableView.isHidden = false
+            tableView.reloadData()
         }
     }
-    
+}
+
+struct SearchResults {
+    let name: String
+    let uid: String
 }
 
 

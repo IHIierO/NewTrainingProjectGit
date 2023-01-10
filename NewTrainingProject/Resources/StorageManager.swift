@@ -14,18 +14,18 @@ final class StorageManager {
     private let storage = Storage.storage().reference()
     
     public func uploadProfileImage(with data: Data, fileName: String, completion: @escaping (Result<String, Error>) -> Void) {
-        storage.child("images/\(fileName)").putData(data, metadata: nil) { metadata, error in
+        storage.child("images/\(fileName)").putData(data, metadata: nil) { [weak self] metadata, error in
+            guard let strongSelf = self else {return}
             guard error == nil else {
                 completion(.failure(StorageErrors.failedToUpload))
                 return
             }
             
-            self.storage.child("images/\(fileName)").downloadURL { url, error in
+            strongSelf.storage.child("images/\(fileName)").downloadURL { url, error in
                 guard let url = url else {
                     completion(.failure(StorageErrors.failedToGetDowloadUrl))
                     return
                 }
-                
                 let urlString = url.absoluteString
                 completion(.success(urlString))
             }
