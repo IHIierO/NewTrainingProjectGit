@@ -167,24 +167,22 @@ class AllChatsController: UITableViewController {
             let chatUid = self.chats[indexPath.row].id
             
             tableView.beginUpdates()
+            self.chats.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
             
-            DataBaseManager.shared.deleteChat(chatUid: chatUid) {[weak self] success in
-                #warning("Неверное удаление из chats")
-                self?.chats.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .fade)
+            DataBaseManager.shared.deleteChat(chatUid: chatUid) {success in
+                if !success {
+                    //add allert for error
+                    print("filed to delite")
+                }
             }
-            
             tableView.endUpdates()
-            
             return complitionHandler(true)
         }
-        
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         configuration.performsFirstActionWithFullSwipe = true
         return configuration
     }
-    
-    
 }
 
 // MARK: - SwiftUI

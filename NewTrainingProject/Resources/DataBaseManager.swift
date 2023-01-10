@@ -376,4 +376,11 @@ extension DataBaseManager {
 
 public enum DatabaseError: Error {
     case filedToFetch
+    
+    public var localizedDescription: String {
+        switch self {
+        case .filedToFetch:
+            return "Filed to fetch document"
+        }
+    }
 }
