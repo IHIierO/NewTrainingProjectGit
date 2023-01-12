@@ -15,6 +15,7 @@ enum SideMenuItem: String, CaseIterable {
     case home = "Home"
     case settings = "Settings"
     case chatBot = "ChatBot"
+    case goToRM = "Go to Adventure"
 }
 
 

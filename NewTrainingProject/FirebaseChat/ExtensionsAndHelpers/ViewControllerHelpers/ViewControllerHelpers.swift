@@ -73,6 +73,11 @@ class ViewControllerHelpers {
             chatBotController.didMove(toParent: homeController)
             homeController.title = chatBotController.title
             homeController.navigationItem.rightBarButtonItem = chatBotController.navigationItem.rightBarButtonItem
+        } else if controller == .goToRM {
+            let goToRMController = GoToRMController()
+            goToRMController.modalTransitionStyle = .crossDissolve
+            goToRMController.modalPresentationStyle = .fullScreen
+            homeController.present(goToRMController, animated: true)
         }
         
     }

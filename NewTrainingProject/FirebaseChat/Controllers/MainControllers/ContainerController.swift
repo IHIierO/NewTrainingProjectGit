@@ -90,6 +90,8 @@ extension ContainerController: MenuViewDelegate {
                 ViewControllerHelpers.chooseController(controller: .settings, homeController: homeController)
             case .chatBot:
                 ViewControllerHelpers.chooseController(controller: .chatBot, homeController: homeController)
+            case .goToRM:
+                ViewControllerHelpers.chooseController(controller: .goToRM, homeController: homeController)
             }
         }
     }

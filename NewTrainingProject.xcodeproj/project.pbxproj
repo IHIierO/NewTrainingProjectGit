@@ -36,6 +36,7 @@
 		398F31A729586FF900E1F7C5 /* DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398F31A629586FF900E1F7C5 /* DownloadImage.swift */; };
 		39C1250D29700F45003895DE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39C1250C29700F45003895DE /* GoogleService-Info.plist */; };
 		39C125102970152B003895DE /* NewTrainingProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 39C1250E2970152B003895DE /* NewTrainingProject.xcdatamodeld */; };
+		39C1251529701750003895DE /* GoToRMController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C1251429701750003895DE /* GoToRMController.swift */; };
 		FA436B48A2DB0DFA7851B75A /* Pods_NewTrainingProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +72,7 @@
 		398F31A629586FF900E1F7C5 /* DownloadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadImage.swift; sourceTree = "<group>"; };
 		39C1250C29700F45003895DE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		39C1250F2970152B003895DE /* NewTrainingProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NewTrainingProject.xcdatamodel; sourceTree = "<group>"; };
+		39C1251429701750003895DE /* GoToRMController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToRMController.swift; sourceTree = "<group>"; };
 		646DF55D19BCB3DA133BCFB4 /* Pods-NewTrainingProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.release.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.release.xcconfig"; sourceTree = "<group>"; };
 		7D5A73D77097E0D349E4A780 /* Pods_NewTrainingProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NewTrainingProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977635C7DBA3F62A0B7EB380 /* Pods-NewTrainingProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewTrainingProject.debug.xcconfig"; path = "Target Support Files/Pods-NewTrainingProject/Pods-NewTrainingProject.debug.xcconfig"; sourceTree = "<group>"; };
@@ -243,8 +245,17 @@
 		39C1251229701678003895DE /* RMAPI */ = {
 			isa = PBXGroup;
 			children = (
+				39C1251329701738003895DE /* Controllers */,
 			);
 			path = RMAPI;
+			sourceTree = "<group>";
+		};
+		39C1251329701738003895DE /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				39C1251429701750003895DE /* GoToRMController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		CE6A2C1E33C297145DEFC60F /* Pods */ = {
@@ -384,6 +395,7 @@
 				398A052D2952117F00E02110 /* CustomDate.swift in Sources */,
 				398F319F29548ACB00E1F7C5 /* DataBaseManager.swift in Sources */,
 				39C125102970152B003895DE /* NewTrainingProject.xcdatamodeld in Sources */,
+				39C1251529701750003895DE /* GoToRMController.swift in Sources */,
 				398A0515294B715000E02110 /* ViewControllerHelpers.swift in Sources */,
 				398A0506294B445E00E02110 /* SignUpController.swift in Sources */,
 				398A04F9294B3F3A00E02110 /* ViewControllerPreview.swift in Sources */,
