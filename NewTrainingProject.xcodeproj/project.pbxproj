@@ -100,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				398A04DE294B3C8E00E02110 /* NewTrainingProject */,
+				39C1251229701678003895DE /* RMAPI */,
 				398A04DD294B3C8E00E02110 /* Products */,
 				CE6A2C1E33C297145DEFC60F /* Pods */,
 				154204CC11B6097703BCDC96 /* Frameworks */,
@@ -117,10 +118,7 @@
 		398A04DE294B3C8E00E02110 /* NewTrainingProject */ = {
 			isa = PBXGroup;
 			children = (
-				398A0502294B43C700E02110 /* Controllers */,
-				398A05222951F22D00E02110 /* Models */,
-				398A04F6294B3F0300E02110 /* ExtensionsAndHelpers */,
-				398F31962953231500E1F7C5 /* Resources */,
+				39C1251129701614003895DE /* FirebaseChat */,
 			);
 			path = NewTrainingProject;
 			sourceTree = "<group>";
@@ -229,6 +227,24 @@
 				39C1250E2970152B003895DE /* NewTrainingProject.xcdatamodeld */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		39C1251129701614003895DE /* FirebaseChat */ = {
+			isa = PBXGroup;
+			children = (
+				398A0502294B43C700E02110 /* Controllers */,
+				398A05222951F22D00E02110 /* Models */,
+				398A04F6294B3F0300E02110 /* ExtensionsAndHelpers */,
+				398F31962953231500E1F7C5 /* Resources */,
+			);
+			path = FirebaseChat;
+			sourceTree = "<group>";
+		};
+		39C1251229701678003895DE /* RMAPI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = RMAPI;
 			sourceTree = "<group>";
 		};
 		CE6A2C1E33C297145DEFC60F /* Pods */ = {
@@ -522,7 +538,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z77PMGH233;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = NewTrainingProject/Resources/Info.plist;
+				INFOPLIST_FILE = NewTrainingProject/FirebaseChat/Resources/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile photo";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select a photo for your profile";
@@ -558,7 +574,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z77PMGH233;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = NewTrainingProject/Resources/Info.plist;
+				INFOPLIST_FILE = NewTrainingProject/FirebaseChat/Resources/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile photo";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select a photo for your profile";
