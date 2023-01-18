@@ -17,6 +17,7 @@ class RMCharacterController: UIViewController {
     private func setupController() {
         view.backgroundColor = .systemBackground
         title = "Characters"
+        
     }
 
 }
