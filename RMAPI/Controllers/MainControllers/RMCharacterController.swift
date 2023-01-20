@@ -7,9 +7,9 @@
 
 import UIKit
 
-class RMCharacterController: UIViewController {
+class RMCharacterController: UIViewController, RMCharacterListViewDelegate {
     
-    private var characterListView = CharacterListView()
+    private var characterListView = RMCharacterListView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +21,7 @@ class RMCharacterController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Characters"
         view.addSubview(characterListView)
+        characterListView.delegate = self
     }
     
     private func setConstraints() {
@@ -32,4 +33,11 @@ class RMCharacterController: UIViewController {
         ])
     }
 
+    //MARK: - RMCharacterListViewDelegate
+    func rmCharacterListView(_ characterListView: RMCharacterListView, didSelectCharacter character: RMCharacter) {
+        let viewModel = RMCharacterDetailViewViewModel(character: character)
+        let detailVC = RMCharacterDetailController(viewModel: viewModel)
+        detailVC.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
 }
