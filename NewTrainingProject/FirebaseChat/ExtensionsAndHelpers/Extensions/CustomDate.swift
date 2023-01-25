@@ -38,5 +38,12 @@ class CustomDate {
         dateFormatter.dateFormat = "dd.MM.yyyy"
         return dateFormatter.date(from: string)!
     }
+    
+    static func rmShortDateFormatter(from date: Date) -> String {
+       let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM, yyyy HH:mm"
+        formatter.timeZone = .current
+        return formatter.string(from: date)
+    }
 }
 

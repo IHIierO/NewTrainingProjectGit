@@ -79,6 +79,7 @@ class DefaultActivityIndicator: UIActivityIndicatorView{
         self.indicatorStyle = indicatorStyle
         super.init(frame: .zero)
         self.style = indicatorStyle
+        translatesAutoresizingMaskIntoConstraints = false
     }
     
     func show(view: UIView){
