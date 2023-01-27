@@ -33,21 +33,6 @@ final class RMCharacterDetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    public func fethCharacterData() {
-//        guard let url = requestURL, let request = RMRequest(url: url) else {
-//            return
-//        }
-//
-//        RMService.shared.execute(request, expexting: RMCharacter.self) { result in
-//            switch result {
-//            case .success(let success):
-//                print(String(describing: success))
-//            case .failure(let failure):
-//                print(String(describing: failure))
-//            }
-//        }
-//    }
-    
     private func setConstarints() {
         
         guard let collectionView = collectionView else {
