@@ -15,6 +15,18 @@ class RMEpisodeController: UIViewController, RMEpisodeListViewDelegate {
         super.viewDidLoad()
         setupController()
         setConstraints()
+        addSearchButton()
+    }
+    
+    private func addSearchButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .search,
+            target: self,
+            action: #selector(didTapSearch))
+    }
+    
+    @objc private func didTapSearch() {
+        
     }
     
     private func setupController() {

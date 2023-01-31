@@ -12,12 +12,12 @@ final class RMCharacterDetailController: UIViewController {
     
     private var viewModel: RMCharacterDetailViewViewModel
     
-    let detailview: RMCharacterDetailView
+    let detailView: RMCharacterDetailView
     
     // MARK: - init
     init (viewModel: RMCharacterDetailViewViewModel) {
         self.viewModel = viewModel
-        self.detailview = RMCharacterDetailView(frame: .zero, viewModel: viewModel)
+        self.detailView = RMCharacterDetailView(frame: .zero, viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -35,13 +35,13 @@ final class RMCharacterDetailController: UIViewController {
     private func setupController() {
         view.backgroundColor = .systemBackground
         title = viewModel.title
-        view.addSubview(detailview)
+        view.addSubview(detailView)
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .action,
             target: self,
             action: #selector(didTapShare))
-        detailview.collectionView?.delegate = self
-        detailview.collectionView?.dataSource = self
+        detailView.collectionView?.delegate = self
+        detailView.collectionView?.dataSource = self
     }
     
     @objc func didTapShare() {
@@ -50,10 +50,10 @@ final class RMCharacterDetailController: UIViewController {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            detailview.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            detailview.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
-            detailview.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
-            detailview.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            detailView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            detailView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+            detailView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+            detailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
 }

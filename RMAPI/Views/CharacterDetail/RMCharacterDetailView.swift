@@ -74,5 +74,4 @@ final class RMCharacterDetailView: UIView {
             return viewModel.createEpisodesSectionLayout()
         }
     }
-    
 }

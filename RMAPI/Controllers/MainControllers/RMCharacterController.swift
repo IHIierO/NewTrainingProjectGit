@@ -15,6 +15,36 @@ class RMCharacterController: UIViewController, RMCharacterListViewDelegate {
         super.viewDidLoad()
         setupController()
         setConstraints()
+        addSearchButton()
+    }
+    
+    private func addSearchButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .search,
+            target: self,
+            action: #selector(didTapSearch))
+    }
+    
+    @objc private func didTapSearch() {
+        let viewController = RMSearchController(config: RMSearchController.Config(type: .character))
+        viewController.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    @objc private func didTapSearchPopover() {
+        let viewController = RMSearchController(config: RMSearchController.Config(type: .character))
+        viewController.modalPresentationStyle = .popover
+        viewController.navigationItem.largeTitleDisplayMode = .never
+        
+        guard let view = navigationItem.rightBarButtonItem!.value(forKey: "view") as? UIView else { return }
+        
+        if let popoverPresentationController = viewController.popoverPresentationController {
+            popoverPresentationController.permittedArrowDirections = .up
+            popoverPresentationController.sourceView = view
+            popoverPresentationController.sourceRect = view.frame
+            popoverPresentationController.delegate = self
+        }
+        present(viewController, animated: true, completion: nil)
     }
     
     private func setupController() {
@@ -39,5 +69,11 @@ class RMCharacterController: UIViewController, RMCharacterListViewDelegate {
         let detailVC = RMCharacterDetailController(viewModel: viewModel)
         detailVC.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(detailVC, animated: true)
+    }
+}
+
+extension RMCharacterController: UIPopoverPresentationControllerDelegate {
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        return .none
     }
 }
