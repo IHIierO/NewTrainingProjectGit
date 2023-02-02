@@ -50,6 +50,10 @@
 		395BE3B02987DC0900DCD96C /* RMSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395BE3AF2987DC0900DCD96C /* RMSearchController.swift */; };
 		395BE3B22987F8C200DCD96C /* RMEpisodeInfoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395BE3B12987F8C200DCD96C /* RMEpisodeInfoCollectionViewCell.swift */; };
 		395BE3B42987F8F500DCD96C /* RMEpisodeInfoCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395BE3B32987F8F500DCD96C /* RMEpisodeInfoCollectionViewCellViewModel.swift */; };
+		395BE3B72989377500DCD96C /* RMSettingsViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395BE3B62989377500DCD96C /* RMSettingsViewViewModel.swift */; };
+		395BE3BA298937C600DCD96C /* RMSettingsCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395BE3B9298937C600DCD96C /* RMSettingsCellViewModel.swift */; };
+		395BE3BC2989385200DCD96C /* RMSettingsOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395BE3BB2989385200DCD96C /* RMSettingsOption.swift */; };
+		395BE3BF2989428400DCD96C /* RMSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395BE3BE2989428400DCD96C /* RMSettingsView.swift */; };
 		398A04E0294B3C8E00E02110 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A04DF294B3C8E00E02110 /* AppDelegate.swift */; };
 		398A04E2294B3C8E00E02110 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A04E1294B3C8E00E02110 /* SceneDelegate.swift */; };
 		398A04E4294B3C8E00E02110 /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A04E3294B3C8E00E02110 /* AuthController.swift */; };
@@ -127,6 +131,10 @@
 		395BE3AF2987DC0900DCD96C /* RMSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSearchController.swift; sourceTree = "<group>"; };
 		395BE3B12987F8C200DCD96C /* RMEpisodeInfoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMEpisodeInfoCollectionViewCell.swift; sourceTree = "<group>"; };
 		395BE3B32987F8F500DCD96C /* RMEpisodeInfoCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMEpisodeInfoCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
+		395BE3B62989377500DCD96C /* RMSettingsViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSettingsViewViewModel.swift; sourceTree = "<group>"; };
+		395BE3B9298937C600DCD96C /* RMSettingsCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSettingsCellViewModel.swift; sourceTree = "<group>"; };
+		395BE3BB2989385200DCD96C /* RMSettingsOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSettingsOption.swift; sourceTree = "<group>"; };
+		395BE3BE2989428400DCD96C /* RMSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSettingsView.swift; sourceTree = "<group>"; };
 		398A04DC294B3C8E00E02110 /* NewTrainingProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewTrainingProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		398A04DF294B3C8E00E02110 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		398A04E1294B3C8E00E02110 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -240,6 +248,7 @@
 		395BE36B29798AF400DCD96C /* VIewModels */ = {
 			isa = PBXGroup;
 			children = (
+				395BE3B52989370E00DCD96C /* Settings */,
 				395BE3AA2983E00500DCD96C /* Episode */,
 				395BE3A12983DA4C00DCD96C /* EpisodeDetails */,
 				395BE39C297EE28E00DCD96C /* Character */,
@@ -251,6 +260,7 @@
 		395BE36E29798B6600DCD96C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				395BE3BD2989424E00DCD96C /* SwiftUI */,
 				395BE3A72983DD6E00DCD96C /* Episode */,
 				395BE3A42983DADE00DCD96C /* EpisodeDetail */,
 				395BE38E297EE1B400DCD96C /* Character */,
@@ -363,6 +373,24 @@
 				395BE3AB2983E01900DCD96C /* RMEpisodeListViewViewModel.swift */,
 			);
 			path = Episode;
+			sourceTree = "<group>";
+		};
+		395BE3B52989370E00DCD96C /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				395BE3B62989377500DCD96C /* RMSettingsViewViewModel.swift */,
+				395BE3B9298937C600DCD96C /* RMSettingsCellViewModel.swift */,
+				395BE3BB2989385200DCD96C /* RMSettingsOption.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		395BE3BD2989424E00DCD96C /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				395BE3BE2989428400DCD96C /* RMSettingsView.swift */,
+			);
+			path = SwiftUI;
 			sourceTree = "<group>";
 		};
 		398A04D3294B3C8E00E02110 = {
@@ -665,9 +693,12 @@
 				395BE34A297829B500DCD96C /* RMEpisode.swift in Sources */,
 				398A0500294B433000E02110 /* EasyLayouts.swift in Sources */,
 				398A05252951F25700E02110 /* ChatMessageCell.swift in Sources */,
+				395BE3BF2989428400DCD96C /* RMSettingsView.swift in Sources */,
 				398F31A729586FF900E1F7C5 /* DownloadImage.swift in Sources */,
 				395BE3A62983DAF000DCD96C /* RMEpisodeDetailView.swift in Sources */,
+				395BE3BA298937C600DCD96C /* RMSettingsCellViewModel.swift in Sources */,
 				395BE39B297EE27E00DCD96C /* RMCharacterEpisodeCollectionViewCellViewModel.swift in Sources */,
+				395BE3BC2989385200DCD96C /* RMSettingsOption.swift in Sources */,
 				398F31982953235000E1F7C5 /* StorageManager.swift in Sources */,
 				395BE3B42987F8F500DCD96C /* RMEpisodeInfoCollectionViewCellViewModel.swift in Sources */,
 				395BE37F297AC5C800DCD96C /* RMCharacterDetailViewViewModel.swift in Sources */,
@@ -690,6 +721,7 @@
 				395BE3AC2983E01900DCD96C /* RMEpisodeListViewViewModel.swift in Sources */,
 				395BE377297AB1BB00DCD96C /* RMCharacterCollectionViewCellViewModel.swift in Sources */,
 				395BE37B297AC4B200DCD96C /* RMCharacterDetailController.swift in Sources */,
+				395BE3B72989377500DCD96C /* RMSettingsViewViewModel.swift in Sources */,
 				395BE37D297AC59900DCD96C /* RMCharacterDetailView.swift in Sources */,
 				395BE3A32983DA9300DCD96C /* RMEpisodeDetailViewViewModel.swift in Sources */,
 				395BE34C29782A0900DCD96C /* RMLocationController.swift in Sources */,
@@ -867,6 +899,7 @@
 				DEVELOPMENT_TEAM = Z77PMGH233;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewTrainingProject/FirebaseChat/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TranningProject;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile photo";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select a photo for your profile";
@@ -903,6 +936,7 @@
 				DEVELOPMENT_TEAM = Z77PMGH233;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewTrainingProject/FirebaseChat/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TranningProject;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile photo";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select a photo for your profile";
